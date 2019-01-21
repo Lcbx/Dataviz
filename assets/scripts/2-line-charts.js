@@ -20,10 +20,10 @@ function createLine(x, y) {
   
   // SEE THIS : https://bl.ocks.org/gordlea/27370d1eea8464b04538e6d8ced39e89
   // AND THIS : http://www.d3noob.org/2016/08/create-simple-line-graph-using-d3js-v4.html
-  // IT SHOULD FREAKING WORK --edit : it works now
+  // IT SHOULD FREAKING WORK --edit : it works now see BS below
   var line = d3.line()
-    .x(function(d) { console.log(d.date); return x(d.date);  })
-    .y(function(d) { console.log(d.count); return y(d.count); })
+    .x(function(d) { return x(d.date);  })
+    .y(function(d) { return y(d.count); })
 	.curve(d3.curveBasisOpen);
   return line;
 
@@ -41,16 +41,14 @@ function createFocusLineChart(g, sources, line, color) {
   // TODO: Dessiner le graphique focus dans le groupe "g".
   // Pour chacun des "path" que vous allez dessiner, spécifier l'attribut suivant: .attr("clip-path", "url(#clip)").
   
-  // YOU GIVING ME A HEARTSTROKE --edit : it works now
-	g.append("path")
-		.data([ sources[0]["values"] ]) // <= don't forget the [] around data
-		.attr("class", "line")
-		.attr("d", line)
-		.attr("stroke", "#ffab00") // color
-		.attr("clip-path", "url(0)"); // "url(#clip)"); idk
-		
-	console.log(sources[0]["values"]);
-	return g;
+	for(var i=0; i< sources.length; i++){
+		g.append("path")
+			.data([ sources[i].values ]) // <= /!\ don't forget the [ ] around data /!\
+			.attr("class", "line")
+			.attr("d", line)
+			.attr("stroke", color(sources[i].name))
+			.attr("clip-path", "url(" + i + ")");
+	}
 }
 
 /**
@@ -63,5 +61,7 @@ function createFocusLineChart(g, sources, line, color) {
  */
 function createContextLineChart(g, sources, line, color) {
   // TODO: Dessiner le graphique contexte dans le groupe "g".
-
+  
+  // the code doesn't seem to be different, so why make it so
+  createFocusLineChart(g, sources, line, color);
 }

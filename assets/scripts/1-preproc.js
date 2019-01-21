@@ -15,7 +15,7 @@ function domainColor(color, data) {
 	// TODO: Définir le domaine de la variable "color" en associant un nom de rue à une couleur.
 	var rues = Object.keys(data[0]).slice(1);
 	color.domain(rues);
-	//console.log(color.range(), color.domain());
+	console.log(color.range(), color.domain());
 }
 
 /**
@@ -28,10 +28,10 @@ function parseDate(data) {
   // TODO: Convertir les dates du fichier CSV en objet de type Date.
   
   for(var i = 0; i<data.length; i++) {
-  	var date = data[i]["Date"];
+  	var date = data[i].Date;
   	var dateArray = date.split("/");
   	var d = new Date(2016, dateArray[1]-1, dateArray[0]);
-  	data[i]["Date"] = d;
+  	data[i].Date = d;
   }
   //console.log(data);
 }
@@ -67,11 +67,10 @@ function createSources(color, data) {
   	rues[i] = { "name" : rue, "values" : temp };
 
     data.map(function(d) {
-      rues[i]["values"].push({ "date" : d.Date , "count" : parseInt(d[rue]) });
+      rues[i].values.push({ "date" : d.Date , "count" : parseInt(d[rue]) });
     })
   }
-
-  console.log(rues);
+  //console.log(rues);
   return rues;
 }
 
