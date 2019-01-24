@@ -14,8 +14,34 @@
  */
 function legend(svg, sources, color) {
   // TODO: Créer la légende accompagnant le graphique.
+  var legendRectSize = 18;
+  var legendSpacing = 4;  
 
+  var legend = svg.selectAll(".legend")
+  	.data(color.domain())
+  	.enter()
+  	.append("g")
+  	.attr("class", "legend")
+  	.attr('transform', function(d, i) {
+        var height = legendRectSize + 2*legendSpacing;
+        var horz = 4 * legendRectSize;
+        var vert = i * height + 10;
+        return 'translate(' + horz + ',' + vert + ')';
+    });
 
+    legend.append('rect')
+    	.attr("width", legendRectSize)
+    	.attr("height", legendRectSize)
+		.style('fill', color)
+        .style('stroke', "black")
+        .on("click", function(d, color) {
+        	displayLine(d, color);
+        });         
+
+    legend.append('text')
+      .attr('x', legendRectSize + legendSpacing)
+      .attr('y', legendRectSize - legendSpacing)
+      .text(function(d) { return d; }); 
 }
 
 /**
@@ -29,5 +55,6 @@ function legend(svg, sources, color) {
  */
 function displayLine(element, color) {
   // TODO: Compléter le code pour faire afficher ou disparaître une ligne en fonction de l'élément cliqué.
-
+  	console.log(element);
+  	
 }
