@@ -40,7 +40,6 @@ function legend(svg, sources, color) {
       .append("text")
       .attr("x",85)
       .attr("y", function(d,i) {return 40+30*i})
-      .attr("font-size",10)
       .attr("fill", function (d) { return color(d.name) })
       .text(function(d) {return d.name})
 }
@@ -56,6 +55,6 @@ function legend(svg, sources, color) {
  */
 function displayLine(element, color) {
   // TODO: Compléter le code pour faire afficher ou disparaître une ligne en fonction de l'élément cliqué.
-  	d3.selectAll("#"+ element).style("opacity", color == "white" ? 1 : 0 );
+  	d3.selectAll("#"+ element).style("opacity", color == "white" ? 100 : 0 );
 
 }
