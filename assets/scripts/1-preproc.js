@@ -1,4 +1,4 @@
-"use strict";
+ "use strict";
 
 /**
  * Fichier permettant de traiter les données provenant du fichier CSV.
@@ -13,9 +13,12 @@
  */
 function domainColor(color, data) {
 	// TODO: Définir le domaine de la variable "color" en associant un nom de rue à une couleur.
+  var newColorRange = color.range();
+  newColorRange[newColorRange.length - 1] = "#000000";
+  color.range(newColorRange); 
+
 	var rues = Object.keys(data[0]).slice(1);
 	color.domain(rues);
-	//console.log(color.range(), color.domain());
 }
 
 /**
