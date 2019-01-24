@@ -14,35 +14,35 @@
  */
 function legend(svg, sources, color) {
   // TODO: Créer la légende accompagnant le graphique.
-  var legendRectSize = 18;
-  var legendSpacing = 4; 
+    var legend = svg.append("g")
+      .attr("class", "legend")
+    
+    legend.selectAll("rect")
+      .data(sources)
+      .enter()
+      .append("rect")
+      .attr("width",10)
+      .attr("height",10)
+      .attr("x",70)
+      .attr("y",function (d,i) {return 30+30*i})
+      .attr("fill", function (d) { return color(d.name) })
+      .attr("stroke","black")
+      .on("click", function(d) {
+        var couleur = d3.select(this).attr("fill");
+        d3.select(this)
+          .attr("fill", couleur == "white" ? color(d.name) : "white");
+        displayLine(d.name, couleur);
+      });
 
-  var legend = svg.selectAll(".legend")
-  	.data(color.domain())
-  	.enter()
-  	.append("g")
-  	.attr("class", "legend")
-  	.attr('transform', function(d, i) {
-        var height = legendRectSize + 2*legendSpacing;
-        var horz = 4 * legendRectSize;
-        var vert = i * height + 10;
-        return 'translate(' + horz + ',' + vert + ')';
-    });
-
-    legend.append('rect')
-    	.attr("width", legendRectSize)
-    	.attr("height", legendRectSize)
-		.style('fill', color)
-        .style('stroke', "black")
-        .on("click", function(d, color) {
-        	displayLine(d, color);
-        });         
-
-    legend.append('text')
-      .attr('x', legendRectSize + legendSpacing)
-      .attr('y', legendRectSize - legendSpacing)
-      .text(function(d) { return d; }); 
-
+    legend.selectAll("text")
+      .data(sources)
+      .enter()
+      .append("text")
+      .attr("x",85)
+      .attr("y", function(d,i) {return 40+30*i})
+      .attr("font-size",10)
+      .attr("fill", function (d) { return color(d.name) })
+      .text(function(d) {return d.name})
 }
 
 /**
@@ -56,8 +56,6 @@ function legend(svg, sources, color) {
  */
 function displayLine(element, color) {
   // TODO: Compléter le code pour faire afficher ou disparaître une ligne en fonction de l'élément cliqué.
-  	console.log(element);
-
-  	//console.log(d3.select("svg").selectAll(".legend").select(element).attr("fill"));
+  	d3.selectAll("#"+ element).style("opacity", color == "white" ? 1 : 0 );
 
 }

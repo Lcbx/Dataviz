@@ -47,7 +47,8 @@ function createFocusLineChart(g, sources, line, color) {
 			.attr("class", "line")
 			.attr("d", line)
 			.attr("stroke", color(sources[i].name))
-			.attr("clip-path", "url(#clip)");
+			.attr("clip-path", "url(#clip)")
+			.attr("id", sources[i].name);
 	}
 }
 
