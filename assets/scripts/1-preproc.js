@@ -15,7 +15,7 @@ function domainColor(color, data) {
 	// TODO: Définir le domaine de la variable "color" en associant un nom de rue à une couleur.
 	var rues = Object.keys(data[0]).slice(1);
 	color.domain(rues);
-	console.log(color.range(), color.domain());
+	//console.log(color.range(), color.domain());
 }
 
 /**

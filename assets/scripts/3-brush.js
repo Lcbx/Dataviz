@@ -21,5 +21,12 @@
  */
 function brushUpdate(brush, g, line, xFocus, xContext, xAxis, yAxis) {
   // TODO: Redessiner le graphique focus en fonction de la zone sélectionnée dans le graphique contexte.
-
+  
+	// c'est vraiment peu de code par rapport au temps que ça prend à faire marcher !
+	
+	var s = d3.event.selection || xContext.range();
+	xFocus.domain(s.map(xContext.invert, xContext));
+	// avec juste select, il n'y a qu'une ligne qui est modifiée
+	g.selectAll(".line").attr("d", line);
+	g.selectAll(".x axis").call(xAxis);	
 }
