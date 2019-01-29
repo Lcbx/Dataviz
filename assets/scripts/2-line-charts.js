@@ -20,12 +20,12 @@ function createLine(x, y) {
   
   // SEE THIS : https://bl.ocks.org/gordlea/27370d1eea8464b04538e6d8ced39e89 (same as up there î )
   // AND THIS : http://www.d3noob.org/2016/08/create-simple-line-graph-using-d3js-v4.html
-  // IT SHOULD FREAKING WORK --edit : it works now see BS in function createFocusLineChart
-  var line = d3.line()
-    .x(function(d) { return x(d.date);  })
-    .y(function(d) { return y(d.count); })
+
+	var line = d3.line()
+	.x(function(d) { return x(d.date);  })
+	.y(function(d) { return y(d.count); })
 	.curve(d3.curveBasisOpen);
-  return line;
+	return line;
 
 }
 
@@ -40,13 +40,14 @@ function createLine(x, y) {
 function createFocusLineChart(g, sources, line, color) {
   // TODO: Dessiner le graphique focus dans le groupe "g".
   // Pour chacun des "path" que vous allez dessiner, spécifier l'attribut suivant: .attr("clip-path", "url(#clip)").
-	
+
 	for(var i=0; i< sources.length; i++){
 		g.append("path")
-			.data([ sources[i].values ]) // <= /!\ don't forget the [ ] around data
+			.data([sources[i].values]) // <= /!\ don't forget the [ ] around data
 			.attr("class", "line")
 			.attr("d", line)
 			.attr("stroke", color(sources[i].name))
+			.attr("stroke-width", (function() {if(sources[i].name == "Moyenne") {return "2";} else {return "1";}}))
 			.attr("clip-path", "url(#clip)")
 			.attr("id", sources[i].name);
 	}

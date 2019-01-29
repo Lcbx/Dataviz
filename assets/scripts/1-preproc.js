@@ -13,12 +13,15 @@
  */
 function domainColor(color, data) {
 	// TODO: Définir le domaine de la variable "color" en associant un nom de rue à une couleur.
-  var newColorRange = color.range();
-  newColorRange[newColorRange.length - 1] = "#000000";
-  color.range(newColorRange); 
-
+    
 	var rues = Object.keys(data[0]).slice(1);
 	color.domain(rues);
+
+	var newColorRange = color.range();
+	for (var i=0; i<rues.length; i++){
+		if(rues[i] == "Moyenne"){newColorRange[i] = "#000000";}
+    }
+    color.range(newColorRange); 
 }
 
 /**
@@ -30,13 +33,10 @@ function domainColor(color, data) {
 function parseDate(data) {
   // TODO: Convertir les dates du fichier CSV en objet de type Date.
   
-  for(var i = 0; i<data.length; i++) {
-  	var date = data[i].Date;
-  	var dateArray = date.split("/");
-  	var d = new Date(2016, dateArray[1]-1, dateArray[0]);
-  	data[i].Date = d;
+	for(var i = 0; i<data.length; i++) {
+	var parseTime = d3.timeParse("%d/%m/%y");
+	data[i].Date = parseTime(data[i].Date);
   }
-  //console.log(data);
 }
 
 /**
@@ -62,19 +62,15 @@ function parseDate(data) {
  */
 function createSources(color, data) {
   // TODO: Retourner l'objet ayant le format demandé.
-  var rues = color.domain();
-  var length = rues.length;
-  for(var i=0; i<length; i++){
-  	var rue = rues[i];
-  	var temp = [];
-  	rues[i] = { "name" : rue, "values" : temp };
-
-    data.map(function(d) {
-      rues[i].values.push({ "date" : d.Date , "count" : parseInt(d[rue]) });
-    })
-  }
-  //console.log(rues);
-  return rues;
+	var rues = color.domain();
+	var length = rues.length;
+	for(var i=0; i<length; i++){
+		var rue = rues[i];
+		var temp = [];
+		rues[i] = { "name" : rue, "values" : temp };
+    	data.map(function(d) { rues[i].values.push({ "date" : d.Date , "count" : parseInt(d[rue]) });})
+	}
+	return rues;
 }
 
 /**
@@ -85,12 +81,12 @@ function createSources(color, data) {
  * @param data        Données provenant du fichier CSV.
  */
 function domainX(xFocus, xContext, data) {
-  // TODO: Préciser les domaines pour les variables "xFocus" et "xContext" pour l'axe X.
-  var dates = data.map(function(d){return d.Date});
-  var maxDate = d3.max(dates);
-  var minDate = d3.min(dates);
-  xFocus.domain([minDate, maxDate]);
-  xContext.domain([minDate, maxDate]);
+	// TODO: Préciser les domaines pour les variables "xFocus" et "xContext" pour l'axe X.
+	var dates = data.map(function(d){return d.Date});
+	var maxDate = d3.max(dates);
+	var minDate = d3.min(dates);
+	xFocus.domain([minDate, maxDate]);
+	xContext.domain([minDate, maxDate]);
 }
 
 /**
@@ -102,14 +98,14 @@ function domainX(xFocus, xContext, data) {
  */
 function domainY(yFocus, yContext, sources) {
   // TODO: Préciser les domaines pour les variables "yFocus" et "yContext" pour l'axe Y.
-  var maxCount = 0;
-  var minCount = 10000000;
-  var counts = sources.map(function(d){
-    var c = d.values.map(function(v){
-      if (v.count > maxCount) maxCount = v.count;
-      if (v.count < minCount) minCount = v.count;
-      });
-    });
-  yFocus.domain([minCount, maxCount]);
-  yContext.domain([minCount, maxCount]);
+	var maxCount = 0;
+	var minCount = 10000000;
+	var counts = sources.map(function(d){
+		var c = d.values.map(function(v){
+			if (v.count > maxCount) maxCount = v.count;
+			if (v.count < minCount) minCount = v.count;
+		});
+	});
+	yFocus.domain([minCount, maxCount]);
+	yContext.domain([minCount, maxCount]);
 }

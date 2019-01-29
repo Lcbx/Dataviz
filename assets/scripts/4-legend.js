@@ -14,34 +14,33 @@
  */
 function legend(svg, sources, color) {
   // TODO: Créer la légende accompagnant le graphique.
-    var legend = svg.append("g")
-      .attr("class", "legend")
+	var legend = svg.append("g")
+	.attr("class", "legend")
     
-    legend.selectAll("rect")
-      .data(sources)
-      .enter()
-      .append("rect")
-      .attr("width",10)
-      .attr("height",10)
-      .attr("x",70)
-      .attr("y",function (d,i) {return 30+30*i})
-      .attr("fill", function (d) { return color(d.name) })
-      .attr("stroke","black")
-      .on("click", function(d) {
-        var couleur = d3.select(this).attr("fill");
-        d3.select(this)
-          .attr("fill", couleur == "white" ? color(d.name) : "white");
-        displayLine(d.name, couleur);
-      });
+	legend.selectAll("rect")
+	.data(sources)
+	.enter()
+	.append("rect")
+	.attr("width",10)
+	.attr("height",10)
+	.attr("x",70)
+	.attr("y",function (d,i) {return 30+30*i})
+	.attr("fill", function (d) { return color(d.name) })
+	.attr("stroke","black")
+	.on("click", function(d) {
+		var couleur = d3.select(this).attr("fill");
+		d3.select(this).attr("fill", couleur == "white" ? color(d.name) : "white");
+		displayLine(d.name, couleur);
+	});
 
-    legend.selectAll("text")
-      .data(sources)
-      .enter()
-      .append("text")
-      .attr("x",85)
-      .attr("y", function(d,i) {return 40+30*i})
-      .attr("fill", function (d) { return color(d.name) })
-      .text(function(d) {return d.name})
+	legend.selectAll("text")
+	.data(sources)
+	.enter()
+	.append("text")
+	.attr("x",85)
+	.attr("y", function(d,i) {return 40+30*i})
+	.attr("fill", function (d) { return color(d.name) })
+	.text(function(d) {return d.name})
 }
 
 /**
@@ -55,6 +54,6 @@ function legend(svg, sources, color) {
  */
 function displayLine(element, color) {
   // TODO: Compléter le code pour faire afficher ou disparaître une ligne en fonction de l'élément cliqué.
-  	d3.selectAll("#"+ element).style("opacity", color == "white" ? 100 : 0 );
+	d3.selectAll("#"+ element).style("opacity", color == "white" ? 100 : 0 );
 
 }
