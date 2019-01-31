@@ -16,6 +16,15 @@ function search(countrySelected, g) {
        - Mettre en évidence le pays sélectionné en coloriant le cercle en noir et en appliquant une opacité de 100%.
        - Appliquez une opacité de 15% aux cercles associés aux autres pays.
    */
+   g.selectAll("circle").style("fill-opacity", function(d) {
+   	if (d.name  == countrySelected){
+   		d3.select(this).attr("fill", "black");
+   		return 1
+   	}
+   	else {
+   		return 0.15
+   	}
+   });
 
 }
 
