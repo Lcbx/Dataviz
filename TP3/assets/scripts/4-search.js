@@ -18,7 +18,7 @@ function search(countrySelected, g) {
    */
    g.selectAll("circle").style("fill-opacity", function(d) {
    	if (d.name  == countrySelected){
-   		d3.select(this).attr("fill", "black");
+   		d3.select(this).attr("filter", "brightness(0%)");
    		return 1
    	}
    	else {
@@ -35,5 +35,5 @@ function search(countrySelected, g) {
  */
 function reset(g) {
   // TODO: Réinitialiser l'affichage du nuage de points à celle par défaut.
-
+  	g.selectAll("circle").style("fill-opacity", 0.7).attr("filter", "brightness(100%");
 }
