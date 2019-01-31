@@ -35,5 +35,5 @@ function search(countrySelected, g) {
  */
 function reset(g) {
   // TODO: Réinitialiser l'affichage du nuage de points à celle par défaut.
-  	g.selectAll("circle").style("fill-opacity", 0.7).attr("filter", "brightness(100%");
+  	g.selectAll("circle").style("fill-opacity", 0.7).attr("filter", "brightness(100%)");
 }
