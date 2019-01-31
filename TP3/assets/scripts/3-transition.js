@@ -21,4 +21,16 @@ function transition(g, data, x, y, r) {
        - La transition doit se faire en 1 seconde.
    */
 
+	g.selectAll("circle")
+		.data(data)
+		.transition().duration(1000)
+		.attr("cx", function(d) {
+		return x(d.lifeExpectancy);
+		})
+		.attr("cy", function(d) {
+		return y(d.income);
+		})
+		.attr("r", function(d) {
+		return r(d.population);
+		});
 }
