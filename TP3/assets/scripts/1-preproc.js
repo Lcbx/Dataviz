@@ -43,7 +43,7 @@ function domainY(y) {
   // TODO: Préciser le domaine pour la variable "y" en prenant comme minimum et maximum les valeurs suivantes: 0 USD et 140000 USD.
 	
 	var minDomainY = 0;
-	var maxDomainY = 14000;
+	var maxDomainY = 140000;
 	y.domain([minDomainY, maxDomainY]);
 }
 

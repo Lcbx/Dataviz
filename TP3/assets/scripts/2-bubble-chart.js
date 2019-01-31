@@ -17,8 +17,16 @@
 function createAxes(g, xAxis, yAxis, height, width) {
   // TODO: Dessiner les axes X et Y du graphique.
   // Axe horizontal
-	g.call(xAxis);
-	g.call(yAxis);
+
+	var padding = 0;
+	g.append("g")
+		.attr("class", "axis")
+		.attr("transform", "translate(0," + (height - padding) + ")")
+		.call(xAxis);
+	
+	g.append("g")
+		.attr("class", "axis")
+		.call(yAxis.ticks(5));
 }
 
 /**
@@ -35,5 +43,6 @@ function createAxes(g, xAxis, yAxis, height, width) {
 function createBubbleChart(g, data, x, y, r, color, tip) {
   // TODO: Dessiner les cercles du graphique en utilisant les échelles spécifiées.
   //       Assurez-vous d'afficher l'infobulle spécifiée lorsqu'un cercle est survolé.
+
 
 }
