@@ -60,6 +60,6 @@ function createBubbleChart(g, data, x, y, r, color, tip) {
 			return color(d.zone)
 	   })
 	   .on('mouseover', tip.show)
-	   .on('mouseout', tip.hide)
+	   .on('mouseout', tip.hide);
 
 }
