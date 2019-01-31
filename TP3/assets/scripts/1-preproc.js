@@ -70,7 +70,8 @@ function domainRadius(r, data) {
   // TODO: Préciser le domaine de l'échelle de la variable "r" em spécifiant comme valeurs extrêmes le minimum et le
   //       maximum des populations des pays.
 
-	var minDomainR = d3.min(data.population);	
-	var maxDomainR = d3.max(data.population);
+	var population = data.map(function(d){return d.population});
+	var minDomainR = d3.min(population);
+	var maxDomainR = d3.max(population);
 	r.domain([minDomainR, maxDomainR]);
 }

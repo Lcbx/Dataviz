@@ -17,7 +17,8 @@
 function createAxes(g, xAxis, yAxis, height, width) {
   // TODO: Dessiner les axes X et Y du graphique.
   // Axe horizontal
-
+	g.call(xAxis);
+	g.call(yAxis);
 }
 
 /**

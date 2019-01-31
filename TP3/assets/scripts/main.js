@@ -19,7 +19,6 @@
 
   /***** Échelles *****/
   var color = d3.scaleOrdinal(d3.schemeCategory10);
-	//console.log(color.domain());
   var x = d3.scaleLinear().range([0, width]);
   var y = d3.scaleLinear().range([height, 0]);
   var r = d3.scaleSqrt().range([5, 20]);
