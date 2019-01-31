@@ -19,14 +19,31 @@ function createAxes(g, xAxis, yAxis, height, width) {
   // Axe horizontal
 
 	var padding = 0;
+
 	g.append("g")
 		.attr("class", "axis")
 		.attr("transform", "translate(0," + (height - padding) + ")")
 		.call(xAxis);
+
+	g.append("text")
+		.attr("class", "axis-label")
+		.attr("text-anchor", "end")
+		.attr("x", width)
+		.attr("y", height - 8)
+		.text("Espérance de vie (années)");
 	
 	g.append("g")
 		.attr("class", "axis")
 		.call(yAxis.ticks(5));
+
+	g.append("text")
+		.attr("class", "axis-label")
+		.attr("text-anchor", "end")
+		.attr("x", 0)
+		.attr("y", 20)
+		.attr("transform", function(d) {
+			return "rotate(-90)"})
+		.text("Revenu (USD)");
 }
 
 /**
