@@ -64,6 +64,9 @@ function createBubbleChart(g, data, x, y, r, color, tip) {
 	   .data(data)
 	   .enter()
 	   .append("circle")
+	   .attr("id", function(d){
+	   		return d.name;
+	   })
 	   .attr("cx", function(d){
 			return x(d.lifeExpectancy)
 	   })
