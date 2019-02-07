@@ -26,7 +26,6 @@ function createAxes(g, xAxis, yAxis, height) {
         .attr("transform", function(d) {
             return "rotate(30)"
         });
-
       g.append("g")
           .attr("class", "yaxis")
           .call(yAxis);
@@ -37,6 +36,7 @@ function createAxes(g, xAxis, yAxis, height) {
           .attr("x", 84)
           .attr("y", -20)
           .text("Nombre de trajets");
+		  
 }
 
 /**

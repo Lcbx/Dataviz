@@ -12,7 +12,7 @@
  * @param data    Données provenant du fichier JSON.
  */
 function domainColor(color, data) {
-  var stations = data.map(function(station){ return station.name });
+  var stations = data.map( station => station.name );
   color.domain(stations);
 }
 
@@ -23,7 +23,7 @@ function domainColor(color, data) {
  * @param data    Données provenant du fichier JSON.
  */
 function domainX(x, data) {
-  var stations = data.map(function(station){ return station.name; });
+  var stations = data.map( station => station.name );
   x.domain(stations);
 }
 
@@ -34,8 +34,8 @@ function domainX(x, data) {
  * @param currentData   Les données qui sont actuellement utilisées par le diagramme.
  */
 function domainY(y, currentData) {
-  var counts = currentData.destinations.map(function(station){ return station.count; });
-  y.domain(d3.min(counts), d3.max(counts));
+  var counts = currentData.destinations.map( station => station.count );
+  y.domain( [d3.min(counts), d3.max(counts)] );
 }
 
 /**
@@ -62,7 +62,11 @@ function getMatrix(data) {
 function getTotal(data) {
   // TODO: Calculer le nombre total de trajets réalisés pour le mois d'août 2015.
   var total = 0;
-  data.map(function(station){ station.destinations.map(function(s){ total += s.count; });  });
+  data.map(function(station){
+	  station.destinations.map(function(s){
+		total += s.count;
+	  }); 
+  });
   //console.log(total);
   return total;
 }

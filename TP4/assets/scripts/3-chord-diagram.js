@@ -25,7 +25,7 @@ function createGroups(g, data, layout, arc, color, total, formatPercent) {
      - Tronquer les noms des stations de BIXI qui sont trop longs (Pontiac et Métro Mont-Royal).
      - Afficher un élément "title" lorsqu'un groupe est survolé par la souris.
   */
-
+	
 }
 
 /**
@@ -46,7 +46,7 @@ function createChords(g, data, layout, path, color, total, formatPercent) {
      - Créer les cordes du diagramme avec une opacité de 80%.
      - Afficher un élément "title" lorsqu'une corde est survolée par la souris.
   */
-
+	
 }
 
 /**
