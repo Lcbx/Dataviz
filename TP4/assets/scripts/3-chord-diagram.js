@@ -25,6 +25,25 @@ function createGroups(g, data, layout, arc, color, total, formatPercent) {
      - Tronquer les noms des stations de BIXI qui sont trop longs (Pontiac et Métro Mont-Royal).
      - Afficher un élément "title" lorsqu'un groupe est survolé par la souris.
   */
+  var destination = g.selectAll(".destination")
+                .data(layout.groups)
+                .enter()
+                .append("g")
+                .attr("class", "destination")
+
+  destination.append("path")
+                .attr("id", function(d, i) { return "destination" + i } )
+                .attr("d", arc)
+                .data(data) 
+                .style("fill", function(d) { return color(d.name) } )
+
+  g.selectAll(".destination")
+                .append("textPath")
+                .attr("id", function(d, i) { return "textpath" + i })
+                .data(data.destination)
+                .attr("textContent", "HI");
+ 
+  console.log(g.selectAll(".destination"));
 
 }
 
