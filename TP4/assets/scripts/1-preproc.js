@@ -12,10 +12,8 @@
  * @param data    Données provenant du fichier JSON.
  */
 function domainColor(color, data) {
-  // TODO: Préciser le domaine de l'échelle de couleurs en y associant les stations de BIXI utilisées.
-
-    var stations = data.map(function(a) {return a.name;});
-	color.domain(stations);
+  var stations = data.map(function(station){ return station.name });
+  color.domain(stations);
 }
 
 /**
@@ -25,9 +23,8 @@ function domainColor(color, data) {
  * @param data    Données provenant du fichier JSON.
  */
 function domainX(x, data) {
-  // TODO: Préciser le domaine pour la variable "x" en y associant les stations de BIXI utilisées.
-    var stations = data.map(function(a) {return a.name;});
-    x.domain(stations);
+  var stations = data.map(function(station){ return station.name; });
+  x.domain(stations);
 }
 
 /**
@@ -37,10 +34,8 @@ function domainX(x, data) {
  * @param currentData   Les données qui sont actuellement utilisées par le diagramme.
  */
 function domainY(y, currentData) {
-  // TODO: Préciser le domaine pour la variable "y" en prenant comme minimum et maximum le nombre de trajets vers une station de BIXI.
-
-    var nombre = currentData.destinations.map(function(a) {return a.count;});
-    y.domain(d3.min(nombre), d3.max(nombre));
+  var counts = currentData.destinations.map(function(station){ return station.count; });
+  y.domain(d3.min(counts), d3.max(counts));
 }
 
 /**
@@ -50,8 +45,13 @@ function domainY(y, currentData) {
  * @return {Array}    Une matrice de 10 x 10 indiquant le nombre de trajets partant et se dirigeant vers une station précise.
  */
 function getMatrix(data) {
-  // TODO: Calculer la matrice d'adjacence pour créer le diagramme à cordes.
-  return [];
+  var matrix = data.map(function(station){
+	  return station.destinations.map(function(s){
+		  return s.count;
+	  });
+  });
+  //console.log(matrix);
+  return matrix;
 }
 
 /**
@@ -61,5 +61,8 @@ function getMatrix(data) {
  */
 function getTotal(data) {
   // TODO: Calculer le nombre total de trajets réalisés pour le mois d'août 2015.
-  return 0;
+  var total = 0;
+  data.map(function(station){ station.destinations.map(function(s){ total += s.count; });  });
+  //console.log(total);
+  return total;
 }
