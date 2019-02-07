@@ -14,6 +14,8 @@
 function domainColor(color, data) {
   // TODO: Préciser le domaine de l'échelle de couleurs en y associant les stations de BIXI utilisées.
 
+    var stations = data.map(function(a) {return a.name;});
+	color.domain(stations);
 }
 
 /**
@@ -24,7 +26,8 @@ function domainColor(color, data) {
  */
 function domainX(x, data) {
   // TODO: Préciser le domaine pour la variable "x" en y associant les stations de BIXI utilisées.
-
+    var stations = data.map(function(a) {return a.name;});
+    x.domain(stations);
 }
 
 /**
@@ -36,6 +39,8 @@ function domainX(x, data) {
 function domainY(y, currentData) {
   // TODO: Préciser le domaine pour la variable "y" en prenant comme minimum et maximum le nombre de trajets vers une station de BIXI.
 
+    var nombre = currentData.destinations.map(function(a) {return a.count;});
+    y.domain(d3.min(nombre), d3.max(nombre));
 }
 
 /**
