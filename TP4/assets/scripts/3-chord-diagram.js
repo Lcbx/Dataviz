@@ -37,13 +37,25 @@ function createGroups(g, data, layout, arc, color, total, formatPercent) {
                 .data(data) 
                 .style("fill", function(d) { return color(d.name) } )
 
-  g.selectAll(".destination")
-                .append("textPath")
-                .attr("id", function(d, i) { return "textpath" + i })
-                .data(data.destination)
-                .attr("textContent", "HI");
- 
-  console.log(g.selectAll(".destination"));
+  destination.append("text")
+              .attr("x", 8)
+              .attr("dy", 18)
+              .attr("font-size", 12.5)
+              .append("textPath")
+              .data(data)
+              .attr("xlink:href", function(d, i) { return "#destination" + i})
+              .text(function(d) {
+                if (d.name === "Pontiac / Gilford")
+                  return "Pontiac";
+
+                else if (d.name === "Métro Mont-Royal (Rivard/Mont-Royal)")
+                  return "Métro Mont-Royal";
+              
+                else 
+                  return d.name;
+              })
+              .style("fill", "white");
+
 }
 
 /**
