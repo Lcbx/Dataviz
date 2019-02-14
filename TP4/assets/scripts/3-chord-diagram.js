@@ -106,5 +106,18 @@ function initializeGroupsHovered(g) {
        opacité de 80%. Toutes les autres cordes doivent être affichées avec une opacité de 10%.
      - Rétablir l'affichage du diagramme par défaut lorsque la souris sort du cercle du diagramme.
   */
-
+	g.selectAll(".ribbons")
+		.on('mouseover', function(d){
+			console.log(d);
+			console.log(g.selectAll("path"));
+			var index = d.source.index;
+			g.selectAll("path")
+				.attr("opacity", 0.4);
+			g.selectAll("#destination" + index)
+				.attr("opacity", 0.9);
+			})
+		.on('mouseout', function(d){
+			g.selectAll(".ribbons")
+				.attr("opacity", 0.8);
+		});
 }
