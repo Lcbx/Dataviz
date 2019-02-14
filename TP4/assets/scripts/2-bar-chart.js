@@ -23,9 +23,8 @@ function createAxes(g, xAxis, yAxis, height) {
         .selectAll("text")
         .attr("class", "axis-label")
         .attr("text-anchor", "start")
-        .attr("transform", function(d) {
-            return "rotate(30)"
-        });
+        .attr("transform", "rotate(30)");
+
       g.append("g")
           .attr("class", "yaxis")
           .call(yAxis);
@@ -58,22 +57,12 @@ function createBarChart(g, currentData, x, y, color, tip, height) {
          .enter()
          .append("rect")
          .attr("class","bar")
-         .attr("id", function(d){
-            return d.name;
-         })
-         .attr("x", function(d){
-            return x(d.name)
-         })
-         .attr("y", function(d){
-            return y(d.count)
-         })
+         .attr("id", d => d.name)
+         .attr("x", d => x(d.name))
+         .attr("y", d => y(d.count))
          .attr("width", 50)
-         .attr("height", function(d){
-            return height - y(d.count)
-         })
-         .attr("fill", function(d){
-            return color(d.name)
-         })
+         .attr("height", d => height - y(d.count))
+         .attr("fill", d => color(d.name))
          .attr("transform", "translate(" + 20 + ")")
          .on('mouseover', tip.show)
          .on('mouseout', tip.hide);
@@ -96,13 +85,8 @@ function transition(g, newData, y, yAxis, height) {
       g.selectAll("rect")
          .data(newData.destinations)
          .transition().duration(1000)
-         .attr("y", function(d){
-          console.log(d);
-            return y(d.count)
-         })
-         .attr("height", function(d){
-            return height - y(d.count)
-         });
+         .attr("y", d => y(d.count))
+         .attr("height", d => height - y(d.count));
 
       g.select(".yaxis")
           .transition().duration(1000)
@@ -120,8 +104,7 @@ function transition(g, newData, y, yAxis, height) {
 function getToolTipText(d, currentData, formatPercent) {
   // TODO: Retourner le texte à afficher dans l'infobulle selon le format demandé.
   //       Assurez-vous d'utiliser la fonction "formatPercent" pour formater le pourcentage correctement.
-      var sumDestinations = d3.sum(currentData.destinations, function(d){
-        return d.count;
-      });
+      var sumDestinations = d3.sum(currentData.destinations, d => d.count);
+      
       return d.count + " (" + formatPercent(d.count/sumDestinations) +  ")";
 }
