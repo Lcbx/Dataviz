@@ -83,10 +83,10 @@ function createChords(g, data, layout, path, color, total, formatPercent) {
     .attr("class", "ribbons")
 
   ribbons.append("path")
+    .attr("opacity", 0.8)
     .attr("id", (d, i) => { return "ribbon" + i } )
     .attr("d", path)
-    .attr("fill", d => { return color(d.name) })
-    .attr("stroke", d => d3.rgb(color(d.name)).darker());
+    .attr("fill", d => { return color(data[d.source.index].name) });
 
 }
 
