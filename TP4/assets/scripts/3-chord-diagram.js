@@ -36,12 +36,17 @@ function createGroups(g, data, layout, arc, color, total, formatPercent) {
     .attr("d", arc)
     .data(data) 
     .style("fill", d => { return color(d.name) } )
+    .append("title").text(function(d) {
+        var destinations = d.destinations;
+        var nbDeparts = destinations.reduce(function(prev, cur) {return prev + cur.count;}, 0);              
+        return d.name + ": " + formatPercent(nbDeparts/total);});
 
   destination.append("text")
     .attr("x", 8)
     .attr("dy", 18)
     .attr("font-size", 12.5)
     .append("textPath")
+    .attr("pointer-events", "none")
     .data(data)
     .attr("xlink:href", (d, i) => { return "#destination" + i})
     .text(d => {
