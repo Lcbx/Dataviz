@@ -39,7 +39,7 @@ function createGroups(g, data, layout, arc, color, total, formatPercent) {
     .append("title").text(function(d) {
         var destinations = d.destinations;
         var nbDeparts = destinations.reduce(function(prev, cur) {return prev + cur.count;}, 0);              
-        return d.name + ": " + formatPercent(nbDeparts/total);});
+        return d.name + ": " + formatPercent(nbDeparts/total) + " des départs";});
 
   destination.append("text")
     .attr("x", 8)
