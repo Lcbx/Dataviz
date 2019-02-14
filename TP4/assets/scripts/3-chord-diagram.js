@@ -46,6 +46,7 @@ function createGroups(g, data, layout, arc, color, total, formatPercent) {
     .attr("dy", 18)
     .attr("font-size", 12.5)
     .append("textPath")
+    .attr("pointer-events", "none")
     .data(data)
     .attr("xlink:href", (d, i) => { return "#destination" + i})
     .text(d => {
