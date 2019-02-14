@@ -116,10 +116,9 @@ function initializeGroupsHovered(g) {
   */
 	
 	g.selectAll(".destination")
-		.on('mouseover', function(d){
+		.on('mouseover', function(d, i){
 			
-			var index = d.index;
-			console.log(index);
+			var index = i;
 			
 			g.selectAll("path")
 				.attr("opacity", 0.1);
@@ -137,7 +136,6 @@ function initializeGroupsHovered(g) {
 		.on('mouseover', function(d){
 			
 			var index = d.source.index;
-			console.log(index);
 			
 			g.selectAll("path")
 				.attr("opacity", 0.1);
