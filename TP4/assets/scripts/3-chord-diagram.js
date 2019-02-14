@@ -28,10 +28,10 @@ function createGroups(g, data, layout, arc, color, total, formatPercent) {
   var destination = g.selectAll(".destination")
     .data(layout.groups)
     .enter()
-    .append("g")
-    .attr("class", "destination")
+    .append("g");
 
   destination.append("path")
+	.attr("class", "destination")
     .attr("id", (d, i) => { return "destination" + i } )
     .attr("d", arc)
     .data(data) 
@@ -59,7 +59,8 @@ function createGroups(g, data, layout, arc, color, total, formatPercent) {
       else 
         return d.name;
     })
-    .style("fill", "white");
+    .style("fill", "white")
+	.attr("source", (d, i)=> "s" + i);
 
 }
 
@@ -91,7 +92,9 @@ function createChords(g, data, layout, path, color, total, formatPercent) {
     .attr("opacity", 0.8)
     .attr("id", (d, i) => { return "ribbon" + i } )
     .attr("d", path)
-    .attr("fill", d => { return color(data[d.source.index].name) });
+    .attr("fill", d => { return color(data[d.source.index].name) })
+	.attr("source", d=>"s" + d.source.index)
+	.attr("target",  d=>"t" + d.target.index);
 
 }
 
@@ -106,18 +109,41 @@ function initializeGroupsHovered(g) {
        opacité de 80%. Toutes les autres cordes doivent être affichées avec une opacité de 10%.
      - Rétablir l'affichage du diagramme par défaut lorsque la souris sort du cercle du diagramme.
   */
+	
+	g.selectAll(".destination")
+		.on('mouseover', function(d){
+			
+			var index = d.index;
+			console.log(index);
+			
+			g.selectAll("path")
+				.attr("opacity", 0.1);
+				
+			g.selectAll(".destination, [source=s" + index+"], [target=t" + index+"]")
+				.attr("opacity", 0.8);
+		})
+		.on('mouseout', function(d){
+			g.selectAll("path")
+				.attr("opacity", 0.8);
+		})
+		
+		
 	g.selectAll(".ribbons")
 		.on('mouseover', function(d){
-			console.log(d);
-			console.log(g.selectAll("path"));
+			
 			var index = d.source.index;
+			console.log(index);
+			
 			g.selectAll("path")
-				.attr("opacity", 0.4);
-			g.selectAll("#destination" + index)
-				.attr("opacity", 0.9);
-			})
+				.attr("opacity", 0.1);
+				
+			g.selectAll(".destination, [source=s" + index+"], [target=t" + index+"]")
+				.attr("opacity", 0.8);
+		})
 		.on('mouseout', function(d){
 			g.selectAll("path")
 				.attr("opacity", 0.8);
 		});
+		
+	
 }
