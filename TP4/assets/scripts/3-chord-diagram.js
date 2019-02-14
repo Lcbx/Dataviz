@@ -117,7 +117,7 @@ function initializeGroupsHovered(g) {
 				.attr("opacity", 0.9);
 			})
 		.on('mouseout', function(d){
-			g.selectAll(".ribbons")
+			g.selectAll("path")
 				.attr("opacity", 0.8);
 		});
 }
