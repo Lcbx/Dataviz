@@ -26,35 +26,35 @@ function createGroups(g, data, layout, arc, color, total, formatPercent) {
      - Afficher un élément "title" lorsqu'un groupe est survolé par la souris.
   */
   var destination = g.selectAll(".destination")
-                .data(layout.groups)
-                .enter()
-                .append("g")
-                .attr("class", "destination")
+    .data(layout.groups)
+    .enter()
+    .append("g")
+    .attr("class", "destination")
 
   destination.append("path")
-                .attr("id", function(d, i) { return "destination" + i } )
-                .attr("d", arc)
-                .data(data) 
-                .style("fill", function(d) { return color(d.name) } )
+    .attr("id", (d, i) => { return "destination" + i } )
+    .attr("d", arc)
+    .data(data) 
+    .style("fill", d => { return color(d.name) } )
 
   destination.append("text")
-              .attr("x", 8)
-              .attr("dy", 18)
-              .attr("font-size", 12.5)
-              .append("textPath")
-              .data(data)
-              .attr("xlink:href", function(d, i) { return "#destination" + i})
-              .text(function(d) {
-                if (d.name === "Pontiac / Gilford")
-                  return "Pontiac";
+    .attr("x", 8)
+    .attr("dy", 18)
+    .attr("font-size", 12.5)
+    .append("textPath")
+    .data(data)
+    .attr("xlink:href", (d, i) => { return "#destination" + i})
+    .text(d => {
+      if (d.name === "Pontiac / Gilford")
+        return "Pontiac";
 
-                else if (d.name === "Métro Mont-Royal (Rivard/Mont-Royal)")
-                  return "Métro Mont-Royal";
-              
-                else 
-                  return d.name;
-              })
-              .style("fill", "white");
+      else if (d.name === "Métro Mont-Royal (Rivard/Mont-Royal)")
+        return "Métro Mont-Royal";
+    
+      else 
+        return d.name;
+    })
+    .style("fill", "white");
 
 }
 
@@ -76,7 +76,18 @@ function createChords(g, data, layout, path, color, total, formatPercent) {
      - Créer les cordes du diagramme avec une opacité de 80%.
      - Afficher un élément "title" lorsqu'une corde est survolée par la souris.
   */
-	
+  var ribbons = g.selectAll(".ribbons")
+    .data(layout)
+    .enter()
+    .append("g")
+    .attr("class", "ribbons")
+
+  ribbons.append("path")
+    .attr("id", (d, i) => { return "ribbon" + i } )
+    .attr("d", path)
+    .attr("fill", d => { return color(d.name) })
+    .attr("stroke", d => d3.rgb(color(d.name)).darker());
+
 }
 
 /**
