@@ -94,7 +94,12 @@ function createChords(g, data, layout, path, color, total, formatPercent) {
     .attr("d", path)
     .attr("fill", d => { return color(data[d.source.index].name) })
 	.attr("source", d=>"s" + d.source.index)
-	.attr("target",  d=>"t" + d.target.index);
+	.attr("target",  d=>"t" + d.target.index)
+    .append("title").text(function(d) {
+            return data[d.source.index].name + " -> " + data[d.target.index].name
+                + ": " + formatPercent(d.source.value/total) + "\n"
+                + data[d.target.index].name + " -> " + data[d.source.index].name
+                + ": " + formatPercent(d.target.value/total);});
 
 }
 
