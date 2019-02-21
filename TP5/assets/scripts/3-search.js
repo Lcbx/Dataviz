@@ -26,4 +26,7 @@ function search(map, g, districtId, bound, showPanel) {
       pour cette circonscription en faisant appel à la fonction "showPanel".
    */
 
+  map.fitBounds(bound, {animate: true, pan: {animate: true, duration: 1, easeLinearity: 0.5}, maxZoom : 8});
+  g.selectAll(".circonscription").attr("class", d => (d.properties.NUMCF == districtId) ? "selected" : "");
+  
 }
