@@ -16,7 +16,9 @@ function colorScale(color, parties) {
   //       De plus, préciser la gamme de couleurs en spécifiant les couleurs utilisées par chacun des partis.
    
 	var domain = parties.map(function(d){ return d.name;}); 
-	color.domain = domain.filter(function(d,i,D){ return D.indexOf(d) === i});
+  var range = parties.map(function(d){ return d.color;}); 
+  color.domain(domain);
+  color.range(range);
 
 }
 

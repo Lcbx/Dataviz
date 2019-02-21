@@ -68,19 +68,27 @@ function createDistricts(g, path, canada, sources, color, showPanel) {
          d'informations associé à cette circonscription doit faire son apparition (utiliser la fonction "showPanel").
          Il est à noter qu'il est possible de sélectionner uniquement une circonscription à la fois.
    */
-    console.log(sources);
-    console.log(canada);
+   
+    for(var i = 0; i < sources.length; i++){
+      var circonscriptionNumber = sources[i].id;
+      var party = sources[i].results[0].party;
+      var foundCirconscription = canada.features.find(x => x.properties.NUMCF === circonscriptionNumber);
+      foundCirconscription.properties.party = party;
+    }
+
     var circonscriptions = g.selectAll('path')
                               .data(canada.features)
                               .enter()
                               .append('path')
                               .attr('d', path)
-                              .attr('class', circonscription)
+                              .attr('class', "circonscription")
                               .attr('stroke', '#333333')
-                              .attr('fill', "555555")
+                              .attr("fill", d => color(d.properties.party))
                               .attr('fill-opacity', 0.8)
-                              .on('click', (d) => {
-
+                              .on('click', d => {
+                                  var selectedCirconscription = d.properties.NUMCF;
+                                  //d3.select(this).attr('class', "selected");
+                                  showPanel(selectedCirconscription);
                               });
 
 }
@@ -98,8 +106,8 @@ function createDistricts(g, path, canada, sources, color, showPanel) {
  */
 function updateMap(svg, g, path, canada) {
   // TODO: Mettre à jour l'élément SVG, la position du groupe "g" et l'affichage des tracés en vous basant sur l'exemple fourni.
-  circonscriptions = path.bounds(canada);
-  var topLeft = bounds[0], bottomRight = bounds[1];
+  var circonscriptions = path.bounds(canada);
+  var topLeft = circonscriptions[0], bottomRight = circonscriptions[1];
 
   svg.attr("width", bottomRight[0] - topLeft[0])
      .attr("height", bottomRight[1] - topLeft[1])
