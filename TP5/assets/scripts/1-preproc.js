@@ -71,15 +71,16 @@ function createSources(data) {
      var candidates = []
       do {
         var temp = data[i];
-        var candidate = {candidate:temp.candidate, percent:temp.percent, votes:temp.percent, party:temp.party};
+        var candidate = {candidate:temp.candidate, percent:temp.percent, votes:temp.votes, party:temp.party};
        candidates.push(candidate);
        ++i;
      }
      while(i<data.length && data[i].id==element.id);
+     candidates.sort( (a,b) => a.votes < b.votes );
+     //console.log(candidates);
      var new_element = {name:element.name, id:element.id, results:candidates};
      new_data.push(new_element);
   }
-
   //console.log(new_data);
   return new_data;
 }
