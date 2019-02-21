@@ -50,7 +50,13 @@ function updatePanelInfo(panel, districtSource, formatNumber) {
        - La nom du candidat gagnant ainsi que son parti;
        - Le nombre total de votes pour tous les candidats (utilisez la fonction "formatNumber" pour formater le nombre).
    */
-
+    panel.select("#district-name").text(districtSource.name);
+    panel.select("#elected-candidate").text(districtSource.results[0].candidate + " ("+ districtSource.results[0].party + ")");
+    let votesCount = 0;
+    for (let i=0; i<districtSource.results.length; i++){
+        votesCount += districtSource.results[i].votes;
+    }
+    panel.select("#votes-count").text(votesCount+ " votes");
 }
 
 /**
