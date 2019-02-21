@@ -14,6 +14,9 @@
 function colorScale(color, parties) {
   // TODO: Préciser le domaine de l'échelle en y associant chacun des partis politique de la liste spécifiée en paramètre.
   //       De plus, préciser la gamme de couleurs en spécifiant les couleurs utilisées par chacun des partis.
+   
+	var domain = parties.map(function(d){ return d.name;}); 
+	color.domain = domain.filter(function(d,i,D){ return D.indexOf(d) === i});
 
 }
 
@@ -24,6 +27,11 @@ function colorScale(color, parties) {
  */
 function convertNumbers(data) {
   // TODO: Convertir les propriétés "id" et "votes" en type "number" pour chacun des éléments de la liste.
+
+	for (let i=0; i<data.length; i++){
+	    data[i].id = parseInt(data[i].id);
+        data[i].votes = parseInt(data[i].votes);
+	}
 
 }
 
@@ -57,5 +65,7 @@ function convertNumbers(data) {
 function createSources(data) {
   // TODO: Retourner l'objet ayant le format demandé. Assurez-vous de trier le tableau "results" pour chacune des entrées
   //       en ordre décroissant de votes (le candidat gagnant doit être le premier élément du tableau).
+
+    console.log(data);
 
 }
