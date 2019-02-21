@@ -88,7 +88,8 @@ function createDistricts(g, path, canada, sources, color, showPanel) {
                               .attr('fill-opacity', 0.8)
                               .on('click', d => {
                                   var selectedCirconscription = d.properties.NUMCF;
-                                  g.selectAll(".circonscription").attr("class", d => (d.properties.NUMCF == selectedCirconscription) ? "selected" : "");
+                                  g.selectAll(".circonscription")
+                                    .classed("selected", d => (d.properties.NUMCF == selectedCirconscription));
                                   showPanel(selectedCirconscription);
                               });
 
