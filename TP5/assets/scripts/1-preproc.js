@@ -65,7 +65,21 @@ function convertNumbers(data) {
 function createSources(data) {
   // TODO: Retourner l'objet ayant le format demandé. Assurez-vous de trier le tableau "results" pour chacune des entrées
   //       en ordre décroissant de votes (le candidat gagnant doit être le premier élément du tableau).
+  var new_data = []
+   for( var i=0; i<data.length;) {
+     var element = data[i];
+     var candidates = []
+      do {
+        var temp = data[i];
+        var candidate = {candidate:temp.candidate, percent:temp.percent, votes:temp.percent, party:temp.party};
+       candidates.push(candidate);
+       ++i;
+     }
+     while(i<data.length && data[i].id==element.id);
+     var new_element = {name:element.name, id:element.id, results:candidates};
+     new_data.push(new_element);
+  }
 
-    console.log(data);
-
+  //console.log(new_data);
+  return new_data;
 }
