@@ -20,6 +20,21 @@ function updateDomains(districtSource, x, y) {
          en premier).
    */
 
+    let results = districtSource.results;
+    let votes = results.map(function(d){return d.votes;});
+
+    x.domain([Math.min(...votes), Math.max(...votes)]);
+
+    function compare(a,b) {
+      if (a.votes > b.votes)
+         return -1;
+      if (a.votes < b.votes)
+        return 1;
+      return 0;
+    }
+    results.sort(compare);
+    let candidates = results.map(function(d){return d.candidate;});
+    y.domain(candidates);
 }
 
 /**
