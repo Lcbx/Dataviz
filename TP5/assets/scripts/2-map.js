@@ -82,6 +82,7 @@ function createDistricts(g, path, canada, sources, color, showPanel) {
                               .append('path')
                               .attr('d', path)
                               .attr('class', "circonscription")
+                              .attr('id', d => d.properties.NUMCF)
                               .attr('stroke', '#333333')
                               .attr("fill", d => color(d.properties.party))
                               .attr('fill-opacity', 0.8)
