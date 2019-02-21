@@ -30,21 +30,23 @@ function createGroups(g, data, layout, arc, color, total, formatPercent) {
     .enter()
     .append("g");
 
+
   destination.append("path")
 	.attr("class", "destination")
     .attr("id", (d, i) => { return "destination" + i } )
     .attr("d", arc)
     .data(data) 
-    .style("fill", d => { return color(d.name) } )
+    .style("fill", d => { return color(d.name) } );
+/*
     .append("title").text(function(d) {
         var destinations = d.destinations;
         var nbDeparts = destinations.reduce(function(prev, cur) {return prev + cur.count;}, 0);              
         return d.name + ": " + formatPercent(nbDeparts/total) + " des départs";});
-
+*/
   destination.append("text")
     .attr("x", 8)
     .attr("dy", 18)
-    .attr("font-size", 12.5)
+    .attr("font-size", 18)
     .append("textPath")
     .attr("pointer-events", "none")
     .data(data)

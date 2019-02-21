@@ -16,7 +16,11 @@
       },
       {
         "name": "Canada",
-        "count": 40
+        "count": 80
+      },
+      {
+        "name": "Japon",
+        "count": 20
       },
       {
         "name": "Suède",
@@ -48,8 +52,12 @@
         "count": 20
       },
       {
-        "name": "Suède",
+        "name": "Japon",
         "count": 0
+      },
+      {
+        "name": "Suède",
+        "count": 25
       },
       {
         "name": "France",
@@ -77,12 +85,16 @@
         "count": 30
       },
       {
+        "name": "Japon",
+        "count": 100
+      },
+      {
         "name": "Suède",
         "count": 0
       },
       {
         "name": "France",
-        "count": 0
+        "count": 10
       }
     ]
   },
@@ -91,7 +103,7 @@
     "destinations": [
       {
         "name": "États-Unis",
-        "count": 40
+        "count": 80
       },
       {
         "name": "Royaume-Uni",
@@ -106,12 +118,49 @@
         "count": 0
       },
       {
+        "name": "Japon",
+        "count": 0
+      },
+      {
         "name": "Suède",
         "count": 0
       },
       {
         "name": "France",
         "count": 40
+      }
+    ]
+  },
+  {
+    "name": "Japon",
+    "destinations": [
+      {
+        "name": "États-Unis",
+        "count": 20
+      },
+      {
+        "name": "Royaume-Uni",
+        "count": 0
+      },
+      {
+        "name": "Allemagne",
+        "count": 100
+      },
+      {
+        "name": "Canada",
+        "count": 0
+      },
+      {
+        "name": "Japon",
+        "count": 0
+      },
+      {
+        "name": "Suède",
+        "count": 0
+      },
+      {
+        "name": "France",
+        "count": 0
       }
     ]
   },
@@ -124,7 +173,7 @@
       },
       {
         "name": "Royaume-Uni",
-        "count": 0
+        "count": 25
       },
       {
         "name": "Allemagne",
@@ -132,6 +181,10 @@
       },
       {
         "name": "Canada",
+        "count": 0
+      },
+      {
+        "name": "Japon",
         "count": 0
       },
       {
@@ -157,13 +210,16 @@
       },
       {
         "name": "Allemagne",
-        "count": 0
+        "count": 10
       },
       {
         "name": "Canada",
         "count": 40
       },
-
+      {
+        "name": "Japon",
+        "count": 0
+      },
       {
         "name": "Suède",
         "count": 0

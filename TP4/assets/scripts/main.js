@@ -33,11 +33,11 @@
 
   var chordDiagramWidth = 600;
   var chordDiagramHeight = 600;
-  var chordDiagramOuterRadius = Math.min(chordDiagramWidth, chordDiagramHeight) / 2 - 10;
-  var chordDiagramInnerRadius = chordDiagramOuterRadius - 24;
+  var chordDiagramOuterRadius = Math.min(chordDiagramWidth, chordDiagramHeight) / 2 - 10; 
+  var chordDiagramInnerRadius = chordDiagramOuterRadius - 20;
 
   /***** Échelles *****/
-  var color = d3.scaleOrdinal(d3.schemeCategory10);
+  var color = d3.scaleOrdinal(d3.schemeDark2);
   var x = d3.scaleBand().range([0, barChartWidth]).round(0.05);
   var y = d3.scaleLinear().range([barChartHeight, 0]);
 
@@ -55,7 +55,7 @@
   /***** Création des éléments du diagramme à cordes *****/
   var arc = d3.arc()
     .innerRadius(chordDiagramInnerRadius)
-    .outerRadius(chordDiagramOuterRadius);
+    .outerRadius(chordDiagramOuterRadius+4);
 
   var layout = d3.chord()
     .padAngle(.04)
@@ -81,6 +81,7 @@
     var tip = d3.tip()
       .attr('class', 'd3-tip')
       .offset([-10, 0]);
+
 
     /***** Prétraitement des données *****/
     domainColor(color, data);
