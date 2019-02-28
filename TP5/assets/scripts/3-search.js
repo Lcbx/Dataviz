@@ -28,5 +28,6 @@ function search(map, g, districtId, bound, showPanel) {
 
   map.fitBounds(bound, {animate: true, pan: {animate: true, duration: 1, easeLinearity: 0.5}, maxZoom : 8});
   g.selectAll(".circonscription").classed("selected", d => (d.properties.NUMCF == districtId));
+  showPanel(districtId);
   
 }
