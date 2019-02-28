@@ -20,11 +20,6 @@ function updateDomains(districtSource, x, y) {
          en premier).
    */
 
-    let results = districtSource.results;
-    let votes = results.map(function(d){return d.votes;});
-
-    x.domain([Math.min(...votes), Math.max(...votes)]);
-
     function compare(a,b) {
       if (a.votes > b.votes)
          return -1;
@@ -32,8 +27,12 @@ function updateDomains(districtSource, x, y) {
         return 1;
       return 0;
     }
+
+    let results = districtSource.results;
     results.sort(compare);
-    let candidates = results.map(function(d){return d.candidate;});
+    let votes = results.map(function(d){return d.votes;});
+    x.domain([Math.min(...votes), Math.max(...votes)]);    
+    let candidates = results.map(function(d){return d.party;});
     y.domain(candidates);
 }
 
@@ -84,6 +83,16 @@ function updatePanelBarChart(gBars, gAxis, districtSource, x, y, yAxis, color, p
          vous devez indiquer "Autre" comme forme abrégée.
    */
 
+console.log(parties);
+/*
+    for (i=0; i<districtSource.results.length; i++) {
+        for (j=0; j<parties.length; j++) {
+            
+        }
+    }
+*/
+    gAxis.append("g").call(yAxis);
+
 }
 
 /**
@@ -93,5 +102,5 @@ function updatePanelBarChart(gBars, gAxis, districtSource, x, y, yAxis, color, p
  */
 function reset(g) {
   // TODO: Réinitialiser l'affichage de la carte en retirant la classe "selected" de tous les éléments.
-  g.selectAll(".circonscription").classed("selected", false);
+    g.select(".selected").attr("class", "circonscription");
 }
