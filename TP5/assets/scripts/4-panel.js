@@ -83,14 +83,10 @@ function updatePanelBarChart(gBars, gAxis, districtSource, x, y, yAxis, color, p
          vous devez indiquer "Autre" comme forme abrégée.
    */
 
-
-//console.log(districtSource);
-
     let abbreviates = parties.map(d => d.abbreviation);
     let partiesNames = parties.map(d => d.name);
     let AxisNames = [];
     
-
     for (let i=0; i<districtSource.results.length; i++) {
         let pos = partiesNames.indexOf(districtSource.results[i].party);
             console.log(districtSource.results[i].party);
@@ -99,10 +95,9 @@ function updatePanelBarChart(gBars, gAxis, districtSource, x, y, yAxis, color, p
         } else {
             AxisNames[i] = "Autre";
         }
-        
     }
 
-console.log(districtSource);
+        gBars.selectAll("rect").remove();
 
         gBars.selectAll("rect")
          .data(districtSource.results)
@@ -112,13 +107,21 @@ console.log(districtSource);
          .attr("x", 0)
          .attr("y", d => y(d.party))
          .attr("width", d => x(d.votes))
-         .attr("height", 20)
-         .attr("fill", d => color(d.party));
+         .attr("height", y.bandwidth())
+         .attr("fill", d => color.domain().includes(d.party) ? color(d.party) : "grey");
 
+        gBars.selectAll("text").remove();
+        gBars.selectAll("text")
+            .data(districtSource.results)
+            .enter()
+            .append("text")
+            .text(d => d.percent)
+            .attr("x", d => x(d.votes)+5)
+            .attr("y", d => y(d.party)+15);
   
-
     y.domain(AxisNames);
     console.log(districtSource.results);
+    gAxis.selectAll("g").remove();
     gAxis.append("g").call(yAxis);
 
 }
