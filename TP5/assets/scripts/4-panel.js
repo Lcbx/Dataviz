@@ -83,14 +83,27 @@ function updatePanelBarChart(gBars, gAxis, districtSource, x, y, yAxis, color, p
          vous devez indiquer "Autre" comme forme abrégée.
    */
 
-console.log(parties);
-/*
-    for (i=0; i<districtSource.results.length; i++) {
-        for (j=0; j<parties.length; j++) {
-            
+
+//console.log(districtSource);
+
+    let abbreviates = parties.map(d => d.abbreviation);
+    let partiesNames = parties.map(d => d.name);
+    console.log(partiesNames);
+    let AxisNames = [];
+    
+
+    for (let i=0; i<districtSource.results.length; i++) {
+        let pos = partiesNames.indexOf(districtSource.results[i].party);
+            console.log(districtSource.results[i].party);
+        if(pos > -1){
+            AxisNames[i] = abbreviates[pos];
+        } else {
+            AxisNames[i] = "Autre";
         }
+        
     }
-*/
+    y.domain(AxisNames);
+    console.log(AxisNames);
     gAxis.append("g").call(yAxis);
 
 }
