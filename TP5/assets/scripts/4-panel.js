@@ -49,7 +49,8 @@ function updatePanelInfo(panel, districtSource, formatNumber) {
        - La nom du candidat gagnant ainsi que son parti;
        - Le nombre total de votes pour tous les candidats (utilisez la fonction "formatNumber" pour formater le nombre).
    */
-    panel.select("#district-name").text(districtSource.name);
+
+    panel.select("#district-name").text(districtSource.name + " [" + districtSource.id + "]");
     panel.select("#elected-candidate").text(districtSource.results[0].candidate + " ("+ districtSource.results[0].party + ")");
     let votesCount = 0;
     for (let i=0; i<districtSource.results.length; i++){
@@ -85,15 +86,15 @@ function updatePanelBarChart(gBars, gAxis, districtSource, x, y, yAxis, color, p
 
     let abbreviates = parties.map(d => d.abbreviation);
     let partiesNames = parties.map(d => d.name);
-    let AxisNames = [];
+    let axisNames = [];
     
     for (let i=0; i<districtSource.results.length; i++) {
         let pos = partiesNames.indexOf(districtSource.results[i].party);
             console.log(districtSource.results[i].party);
         if(pos > -1){
-            AxisNames[i] = abbreviates[pos];
+            axisNames[i] = abbreviates[pos];
         } else {
-            AxisNames[i] = "Autre";
+            axisNames[i] = "Autre";
         }
     }
 
@@ -117,13 +118,15 @@ function updatePanelBarChart(gBars, gAxis, districtSource, x, y, yAxis, color, p
             .append("text")
             .text(d => d.percent)
             .attr("x", d => x(d.votes)+5)
-            .attr("y", d => y(d.party)+15);
-  
-    y.domain(AxisNames);
-    console.log(districtSource.results);
+            .attr("y", d => y(d.party)+ y.bandwidth()/2 + 5);
+
+
+    yAxis.tickFormat(function(d, i){
+        return axisNames[i];
+    });
     gAxis.selectAll("g").remove();
     gAxis.append("g").call(yAxis);
-
+ 
 }
 
 /**
