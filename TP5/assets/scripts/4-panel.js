@@ -88,7 +88,6 @@ function updatePanelBarChart(gBars, gAxis, districtSource, x, y, yAxis, color, p
 
     let abbreviates = parties.map(d => d.abbreviation);
     let partiesNames = parties.map(d => d.name);
-    console.log(partiesNames);
     let AxisNames = [];
     
 
@@ -102,8 +101,24 @@ function updatePanelBarChart(gBars, gAxis, districtSource, x, y, yAxis, color, p
         }
         
     }
+
+console.log(districtSource);
+
+        gBars.selectAll("rect")
+         .data(districtSource.results)
+         .enter()
+         .append("rect")
+         .attr("class","bar")
+         .attr("x", 0)
+         .attr("y", d => y(d.party))
+         .attr("width", d => x(d.votes))
+         .attr("height", 20)
+         .attr("fill", d => color(d.party));
+
+  
+
     y.domain(AxisNames);
-    console.log(AxisNames);
+    console.log(districtSource.results);
     gAxis.append("g").call(yAxis);
 
 }
