@@ -15,7 +15,7 @@ function colorScale(color, parties) {
   // TODO: Préciser le domaine de l'échelle en y associant chacun des partis politique de la liste spécifiée en paramètre.
   //       De plus, préciser la gamme de couleurs en spécifiant les couleurs utilisées par chacun des partis.
    
-	var domain = parties.map(function(d){ return d.name;}); 
+  var domain = parties.map(function(d){ return d.name;}); 
   var range = parties.map(function(d){ return d.color;}); 
   color.domain(domain);
   color.range(range);
@@ -79,10 +79,8 @@ function createSources(data) {
      }
      while(i<data.length && data[i].id==element.id);
      candidates.sort( (a,b) => a.votes < b.votes );
-     //console.log(candidates);
      var new_element = {name:element.name, id:element.id, results:candidates};
      new_data.push(new_element);
   }
-  //console.log(new_data);
   return new_data;
 }

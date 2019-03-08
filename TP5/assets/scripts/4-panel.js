@@ -32,7 +32,7 @@ function updateDomains(districtSource, x, y) {
     results.sort(compare);
     let votes = results.map(function(d){return d.votes;});
     x.domain([Math.min(...votes), Math.max(...votes)]);    
-    let candidates = results.map(function(d){return d.party;});
+    let candidates = results.map(function(d){return d.candidate;});
     y.domain(candidates);
 }
 
@@ -90,7 +90,6 @@ function updatePanelBarChart(gBars, gAxis, districtSource, x, y, yAxis, color, p
     
     for (let i=0; i<districtSource.results.length; i++) {
         let pos = partiesNames.indexOf(districtSource.results[i].party);
-            console.log(districtSource.results[i].party);
         if(pos > -1){
             axisNames[i] = abbreviates[pos];
         } else {
@@ -106,7 +105,7 @@ function updatePanelBarChart(gBars, gAxis, districtSource, x, y, yAxis, color, p
          .append("rect")
          .attr("class","bar")
          .attr("x", 0)
-         .attr("y", d => y(d.party))
+         .attr("y", d => y(d.candidate))
          .attr("width", d => x(d.votes))
          .attr("height", y.bandwidth())
          .attr("fill", d => color.domain().includes(d.party) ? color(d.party) : "grey");
@@ -118,15 +117,14 @@ function updatePanelBarChart(gBars, gAxis, districtSource, x, y, yAxis, color, p
             .append("text")
             .text(d => d.percent)
             .attr("x", d => x(d.votes)+5)
-            .attr("y", d => y(d.party)+ y.bandwidth()/2 + 5);
-
+            .attr("y", d => y(d.candidate)+ y.bandwidth()/2 + 5);
 
     yAxis.tickFormat(function(d, i){
-        return axisNames[i];
-    });
+            return axisNames[i];
+        });
     gAxis.selectAll("g").remove();
     gAxis.append("g").call(yAxis);
- 
+
 }
 
 /**
