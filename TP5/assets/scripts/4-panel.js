@@ -30,9 +30,9 @@ function updateDomains(districtSource, x, y) {
 
     let results = districtSource.results;
     results.sort(compare);
-    let votes = results.map(function(d){return d.votes;});
+    let votes = results.map(d => d.votes);
     x.domain([Math.min(...votes), Math.max(...votes)]);    
-    let candidates = results.map(function(d){return d.candidate;});
+    let candidates = results.map(d => d.candidate);
     y.domain(candidates);
 }
 
@@ -119,9 +119,7 @@ function updatePanelBarChart(gBars, gAxis, districtSource, x, y, yAxis, color, p
             .attr("x", d => x(d.votes)+5)
             .attr("y", d => y(d.candidate)+ y.bandwidth()/2 + 5);
 
-    yAxis.tickFormat(function(d, i){
-            return axisNames[i];
-        });
+    yAxis.tickFormat(function(d, i){return axisNames[i];});
     gAxis.selectAll("g").remove();
     gAxis.append("g").call(yAxis);
 

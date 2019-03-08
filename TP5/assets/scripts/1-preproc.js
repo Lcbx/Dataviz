@@ -15,8 +15,8 @@ function colorScale(color, parties) {
   // TODO: Préciser le domaine de l'échelle en y associant chacun des partis politique de la liste spécifiée en paramètre.
   //       De plus, préciser la gamme de couleurs en spécifiant les couleurs utilisées par chacun des partis.
    
-  var domain = parties.map(function(d){ return d.name;}); 
-  var range = parties.map(function(d){ return d.color;}); 
+  var domain = parties.map(d => d.name); 
+  var range = parties.map(d => d.color);
   color.domain(domain);
   color.range(range);
 
@@ -31,7 +31,7 @@ function convertNumbers(data) {
   // TODO: Convertir les propriétés "id" et "votes" en type "number" pour chacun des éléments de la liste.
 
 	for (let i=0; i<data.length; i++){
-	    data[i].id = parseInt(data[i].id);
+        data[i].id = parseInt(data[i].id);
         data[i].votes = parseInt(data[i].votes);
 	}
 
@@ -69,18 +69,18 @@ function createSources(data) {
   //       en ordre décroissant de votes (le candidat gagnant doit être le premier élément du tableau).
   var new_data = []
    for( var i=0; i<data.length;) {
-     var element = data[i];
-     var candidates = []
-      do {
-        var temp = data[i];
-        var candidate = {candidate:temp.candidate, percent:temp.percent, votes:temp.votes, party:temp.party};
-       candidates.push(candidate);
-       ++i;
-     }
-     while(i<data.length && data[i].id==element.id);
-     candidates.sort( (a,b) => a.votes < b.votes );
-     var new_element = {name:element.name, id:element.id, results:candidates};
-     new_data.push(new_element);
+        var element = data[i];
+        var candidates = []
+        do {
+            var temp = data[i];
+            var candidate = {candidate:temp.candidate, percent:temp.percent, votes:temp.votes, party:temp.party};
+            candidates.push(candidate);
+            ++i;
+        }
+        while(i<data.length && data[i].id==element.id);
+        candidates.sort( (a,b) => a.votes < b.votes );
+        var new_element = {name:element.name, id:element.id, results:candidates};
+        new_data.push(new_element);
   }
   return new_data;
 }

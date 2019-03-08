@@ -70,28 +70,28 @@ function createDistricts(g, path, canada, sources, color, showPanel) {
    */
    
     for(var i = 0; i < sources.length; i++){
-      var circonscriptionNumber = sources[i].id;
-      var party = sources[i].results[0].party;
-      var foundCirconscription = canada.features.find(x => x.properties.NUMCF === circonscriptionNumber);
-      foundCirconscription.properties.party = party;
+        var circonscriptionNumber = sources[i].id;
+        var party = sources[i].results[0].party;
+        var foundCirconscription = canada.features.find(x => x.properties.NUMCF === circonscriptionNumber);
+        foundCirconscription.properties.party = party;
     }
 
     var circonscriptions = g.selectAll('path')
-                              .data(canada.features)
-                              .enter()
-                              .append('path')
-                              .attr('d', path)
-                              .attr('class', "circonscription")
-                              .attr('id', d => d.properties.NUMCF)
-                              .attr('stroke', '#333333')
-                              .attr("fill", d => color(d.properties.party))
-                              .attr('fill-opacity', 0.8)
-                              .on('click', d => {
-                                  var selectedCirconscription = d.properties.NUMCF;
-                                  g.selectAll(".circonscription")
-                                    .classed("selected", d => (d.properties.NUMCF == selectedCirconscription));
-                                  showPanel(selectedCirconscription);
-                              });
+        .data(canada.features)
+        .enter()
+        .append('path')
+        .attr('d', path)
+        .attr('class', "circonscription")
+        .attr('id', d => d.properties.NUMCF)
+        .attr('stroke', '#333333')
+        .attr("fill", d => color(d.properties.party))
+        .attr('fill-opacity', 0.8)
+        .on('click', d => {
+          var selectedCirconscription = d.properties.NUMCF;
+          g.selectAll(".circonscription")
+            .classed("selected", d => (d.properties.NUMCF == selectedCirconscription));
+          showPanel(selectedCirconscription);
+        });
 
 }
 
