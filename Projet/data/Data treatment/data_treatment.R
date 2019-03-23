@@ -13,8 +13,8 @@ colnames(data)[which(names(data) == "URL")] <- "Id"
 
 write.csv(data, "dataTop10.csv", row.names = FALSE)
 
-URLs <- data$URL
-UniqueURLs <- unique(URLs)
+UniqueURLs <- unique(data$URL)
+
 ids <- vector('character')
 pos = 1
 for(d in UniqueURLs){
@@ -29,7 +29,7 @@ for(d in UniqueURLs){
 write.csv(ids, "SongIds.csv", row.names = FALSE)
 
 for(row in 1:nrow(data)){
-  d = unlist(strsplit(as.character(data[row, "URL"]), "/"))
-  data[row, "URL"] = d[length(d)]
+  d = unlist(strsplit(as.character(data[row, "Id"]), "/"))
+  data[row, "Id"] = d[length(d)]
   #print(d[length(d)])
 }
