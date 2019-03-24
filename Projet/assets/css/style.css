@@ -43,3 +43,8 @@ p {
 	text-align: justify;
 	text-justify: inter-word;
 }
+
+#bumpChart{
+	margin: 30px;
+	border: solid;
+}
