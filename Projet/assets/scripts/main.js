@@ -51,7 +51,15 @@ function addSvgToHtml(selectorString, width, height) {
 		drawData(radarChartGroup, radarChartData.averages, radarChartScale, radarChartConfiguration.radius);
 	});
 
-	d3.csv("./data/bumpChartData_global.csv").then(function (data) {
+	d3.csv("./data/bumpChartData.csv").then(function (data) {
+
+        var bump = bumpChartGroup.append("g")
+                    .attr("class", "bump")
+                    .selectAll("g")
+                    .data(data)
+                    .enter()
+                    .append("g");
+
 		console.log(data)
 	})
 
