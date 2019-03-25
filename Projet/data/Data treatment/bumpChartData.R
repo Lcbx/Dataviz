@@ -21,6 +21,7 @@ months <- months[-14]
 completeSongRanks = data[0,]
 completeSongRanks$firstDayOfMonth = NULL
 
+# get top 10 songs by month by country
 for (country in countries) {
   dataRegion <- data[(data$Region == country),]
   for (month in months) {
@@ -47,37 +48,34 @@ completeSongRanks <- na.omit(completeSongRanks)
 completeSongRanks <- completeSongRanks[!(completeSongRanks$Month=="2018-01-01"),]
 months <- unique(completeSongRanks$Month)
 
+
+# add song not in top 10 for every months by country
 for (country in countries) {
   dataRegion <- completeSongRanks[(completeSongRanks$Region == country),]
-  dataRegion2 <- dataRegion
-  dataRegion2$Position = NULL
-  dataRegion2$Streams = NULL
-  dataRegion2$Month = NULL
-  dataRegion2 <- unique(dataRegion2)
-  for (month in 1:nrow(months)) {
+  dataRegionSongs <- dataRegion
+  dataRegionSongs <- dataRegionSongs[!duplicated(dataRegionSongs$songId), ]
+  completeDataRegion <- dataRegion[0,]
+  for (month in months) {
     dataRegionMonth <- dataRegion[(dataRegion$Month == month),]
-    dataRegionMonth$Position = NULL
-    dataRegionMonth$Streams = NULL
-    dataRegionMonth$Month = NULL
-    for (row2 in 1:nrow(dataRegion2)) {
+    dataRegionMonthTemp <- dataRegionMonth
+    for (song in 1:nrow(dataRegionSongs)) {
       for (row in 1:nrow(dataRegionMonth)) {
-        if (dataRegionMonth[row, "songId"] == dataRegion2[row2, "songId"]) {
-          songToAdd <- data.frame(dataRegion2[row2, "Track.Name"], dataRegion2[row2, "Artist"], datare, dataRegion2[row2, "songId"], months[month], country)
-          names(songToAdd) <- c("Track.Name", "Artist", "Streams", "songId", "Month", "Region", months[1], months[2], months[3], months[4], months[5], months[6], months[7], months[8], months[9], months[10], months[11], months[12])
+        if (dataRegionSongs[song,]$songId == dataRegionMonth[row, "songId"]) {
           break
         }
-        if (dataRegionMonth[row, "songId"] == dataRegionMonth[nrow(dataRegionMonth), "songId"]) {
-          missingSong <- data.frame(0, dataRegion2[row2, "Track.Name"], dataRegion2[row2, "Artist"], 0, dataRegion2[row2, "songId"], months[month], country)
-          names(missingSong) <- c("Position", "Track.Name", "Artist", "Streams", "songId", "Month", "Region")
-          completeSongRanks <- rbind(completeSongRanks, missingSong)
-          #print(paste("Country : ", country, " Month : ", month, " Song : ", dataRegion2[row2, "Track.Name"]))
+        if (row == nrow(dataRegionMonth)) {
+          
+          newRow <- dataRegionSongs[song,]
+          newRow[1, "Position"] = 11
+          newRow[1, "Month"] = month
+          newRow[1, "Streams"] = 0
+          dataRegionMonthTemp <- rbind(dataRegionMonthTemp, newRow)
         }
       }
-      
     }
-    #songIdsMonth <- unique(dataRegionMonth$songId)
-    #dataRegionMonthSongs <- c(unique(dataRegionMonth$songId))
+    completeDataRegion <- rbind(completeDataRegion, dataRegionMonthTemp)
   }
+  write.csv(completeDataRegion, paste("bumpChartData_", country, ".csv", sep=""), row.names = FALSE)
 }
 
 write.csv(completeSongRanks, "bumpChartData.csv", row.names = FALSE)

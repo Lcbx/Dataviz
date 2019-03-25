@@ -44,7 +44,6 @@ p {
 	text-justify: inter-word;
 }
 
-#bumpChart{
-	margin: 30px;
+#bumpChartSvg{
 	border: solid;
 }
