@@ -24,26 +24,31 @@ function addSvgToHtml(selectorString, width, height) {
 	 */
 	// Radar chart constants
 	const radarChartAxes = [
-		"danceability", "energy", "loudness", "speechiness",
-		"acousticness", "instrumentalness", "liveness", "valence",
-		"tempo"
+		"danceability", "energy", "speechiness", "acousticness",
+		"instrumentalness", "liveness", "valence"
 	];
 	const radarChartConfiguration = {
 		radius: 200,
-		scaleTicks: 4,
+		scaleTicks: 4
 	};
-	// Radar chart initialisation
+	const radarChartMargin = { top: 10, right: 10, bottom: 10, left: 10 };
+	const radarChartWidth = 960 - radarChartMargin.right - radarChartMargin.left;
+	const radarChartHeight = 500 - radarChartMargin.top - radarChartMargin.bottom;
+	// Drawing the base of the graph
 	const radarChartGroup = addSvgToHtml(
 		"#radar-chart",
-		radarChartConfiguration.radius * 2,
-		radarChartConfiguration.radius * 2,
+		radarChartWidth,
+		radarChartHeight,
 	);
+	const radarChartScale = createScale(radarChartConfiguration.radius, 1.0);
+	drawAxes(radarChartGroup, radarChartAxes, radarChartConfiguration.radius);
+	drawAxisNames(radarChartGroup, radarChartAxes, radarChartConfiguration.radius);
+	drawTicks(radarChartGroup, radarChartConfiguration.radius, radarChartConfiguration.scaleTicks);
 
 	d3.csv('./data/Data treatment/completeDataset.csv').then(data => {
 		// Radar chart setup
 		const radarChartData = calculateBasicStatistics(data, radarChartAxes);
-		drawAxes(radarChartGroup, radarChartAxes, radarChartConfiguration.radius);
-		drawTicks(radarChartGroup, radarChartAxes, radarChartConfiguration.scaleTicks);
+		drawData(radarChartGroup, radarChartData.averages, radarChartScale, radarChartConfiguration.radius);
 	});
 
 	d3.csv("./data/bumpChartData_global.csv").then(function (data) {
