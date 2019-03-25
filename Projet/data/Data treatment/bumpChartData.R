@@ -48,35 +48,64 @@ completeSongRanks <- na.omit(completeSongRanks)
 completeSongRanks <- completeSongRanks[!(completeSongRanks$Month=="2018-01-01"),]
 months <- unique(completeSongRanks$Month)
 
-
 # add song not in top 10 for every months by country
 for (country in countries) {
   dataRegion <- completeSongRanks[(completeSongRanks$Region == country),]
-  dataRegionSongs <- dataRegion
-  dataRegionSongs <- dataRegionSongs[!duplicated(dataRegionSongs$songId), ]
-  completeDataRegion <- dataRegion[0,]
+  dataRegionSongs <- dataRegion[!duplicated(dataRegion$songId), ]
+  dataRegionSongs$Month = NULL
+  dataRegionSongs$Position = NULL
+  dataRegionSongs$Streams = NULL
+  for (m in months) {
+    dataRegionSongs[m] = c("")
+  }
+  #completeDataRegion <- dataRegionSongs[0,]
   for (month in months) {
     dataRegionMonth <- dataRegion[(dataRegion$Month == month),]
-    dataRegionMonthTemp <- dataRegionMonth
     for (song in 1:nrow(dataRegionSongs)) {
       for (row in 1:nrow(dataRegionMonth)) {
         if (dataRegionSongs[song,]$songId == dataRegionMonth[row, "songId"]) {
+          dataRegionSongs[song,month] = dataRegionMonth[row,"Position"]
           break
-        }
-        if (row == nrow(dataRegionMonth)) {
-          
-          newRow <- dataRegionSongs[song,]
-          newRow[1, "Position"] = 11
-          newRow[1, "Month"] = month
-          newRow[1, "Streams"] = 0
-          dataRegionMonthTemp <- rbind(dataRegionMonthTemp, newRow)
         }
       }
     }
-    completeDataRegion <- rbind(completeDataRegion, dataRegionMonthTemp)
   }
-  write.csv(completeDataRegion, paste("bumpChartData_", country, ".csv", sep=""), row.names = FALSE)
+  if (country == countries[1]){
+    formattedCompleteSongRanks <- dataRegionSongs
+  } else {
+    formattedCompleteSongRanks <- rbind(formattedCompleteSongRanks, dataRegionSongs)
+  }
 }
+write.csv(formattedCompleteSongRanks, paste("bumpChartData_test.csv", sep=""), row.names = FALSE)
+
+# # add song not in top 10 for every months by country
+# for (country in countries) {
+#   dataRegion <- completeSongRanks[(completeSongRanks$Region == country),]
+#   dataRegionSongs <- dataRegion
+#   dataRegionSongs <- dataRegionSongs[!duplicated(dataRegionSongs$songId), ]
+#   completeDataRegion <- dataRegion[0,]
+#   for (month in months) {
+#     dataRegionMonth <- dataRegion[(dataRegion$Month == month),]
+#     dataRegionMonthTemp <- dataRegionMonth
+#     for (song in 1:nrow(dataRegionSongs)) {
+#       for (row in 1:nrow(dataRegionMonth)) {
+#         if (dataRegionSongs[song,]$songId == dataRegionMonth[row, "songId"]) {
+#           break
+#         }
+#         if (row == nrow(dataRegionMonth)) {
+#           
+#           newRow <- dataRegionSongs[song,]
+#           newRow[1, "Position"] = 11
+#           newRow[1, "Month"] = month
+#           newRow[1, "Streams"] = 0
+#           dataRegionMonthTemp <- rbind(dataRegionMonthTemp, newRow)
+#         }
+#       }
+#     }
+#     completeDataRegion <- rbind(completeDataRegion, dataRegionMonthTemp)
+#   }
+#   write.csv(completeDataRegion, paste("bumpChartData_", country, ".csv", sep=""), row.names = FALSE)
+# }
 
 write.csv(completeSongRanks, "bumpChartData.csv", row.names = FALSE)
 
