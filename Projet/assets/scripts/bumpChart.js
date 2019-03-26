@@ -65,7 +65,7 @@ function addAxes(g, xAxis, yAxis, height, bottomMargin) {
 function createBumpChart(g, data, x, y, height) {
 	var bump = g.append("g")
 			.attr("class", "bump")
-			.attr("transform", "translate(10," + (height - 30) + ")")
+			.attr("transform", "translate(10,0)")
 			.selectAll("g")
 			.data(data)
 			.enter()
@@ -73,33 +73,49 @@ function createBumpChart(g, data, x, y, height) {
 			
 	bump.append("path")
 		.attr("class", "songPath")
-		.attr("d", createPath);
+		.attr("stroke", "#E3E3E3")
+		.attr("stroke-width", "2")
+		.attr("fill", "none")
+		.attr("d", createPath)
+		.on("mouseover", function(){d3.select(this).attr("stroke-width", "4")
+													.attr("stroke", "#000000");
+									d3.select(this.parentNode).raise();})
+													
+		.on("mouseout", function(d){d3.select(this).attr("stroke-width", "2")
+													.attr("stroke", "#E3E3E3");});
 
 	function createPath(d) {
 		var heightFactor = (y.range()[1] - y.range()[0])/10;
 		var path = [];
-		var initialPos = 0;
+		var initialRank = 0;
 		if (d[x.domain()[0]] == "") {
-			initialPos = 11;
+			initialRank = 11;
 		} else {
-			initialPos = d[x.domain()[0]];
+			initialRank = d[x.domain()[0]];
 		}
-		//console.log(d["Track.Name"]);
-		//console.log((initialPos-1)*heightFactor);
+		path.push("M", 0, " ", y(initialRank));
 		
-		x.domain().forEach(function(b, i) {
-		var a = x.domain()[i];
-		//console.log(d[b]);
-		path.push("L", x(a), ",", y(d[a + "-offset"]), "h", x.bandwidth(), curve(a, b, d));
+		x.domain().slice(1).forEach(function(b, i) {
+		var rank = 0;
+		if (d[b] == "") {
+			rank = 11;
+		} else {
+			rank = d[b];
+		}
+		path.push(" L ", x(b), " ", y(rank));
 		});
-		return path.join("");
+		path = path.join("");
+		//console.log(path);
+		return path;
 	}
 
 	function curve(a, b, d) {
+		/*
 		var xTangent = 10;
 		return "C" + (x(a) + xTangent + x.bandwidth()) + "," + y(d[a + "-offset"]) + " "
 				+ (x(b) - xTangent) + "," + y(d[b + "-offset"]) + " "
 				+ x(b) + "," + y(d[b + "-offset"]);
+				*/
 	}
 
 }

@@ -72,7 +72,7 @@ function drawData(g, data, rScale, radius) {
 	const radialLine = d3.lineRadial()
 		.radius(d => rScale(d))
 		.angle((_, i) => i * ((2*Math.PI) / data.length) + Math.PI/2)
-		.curve(d3.curveLinearClosed);
+		.curve(d3.curveCardinalOpen.tension(0.5));
 
 	dataGroup.selectAll("path")
 		.data([data])
