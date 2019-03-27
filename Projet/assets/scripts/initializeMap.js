@@ -1,7 +1,7 @@
 /**
  * Fichier principal permettant de gérer la carte.
  */
- 
+
 (function (L, d3, topojson, searchBar, localization) {
   "use strict";
 
@@ -106,7 +106,12 @@
 
       
       function showPanel(countryName) {
+        var countryData = data.find(function (e) {
+          return countryName === e.name;
+        });
+
         panel.style("display", "block");
+        updatePanelInfo(panel, countryData, localization.getFormattedNumber);
       }
     });
 
@@ -128,7 +133,7 @@
     var minRatio = d3.min(ratios);
 
     var domain = [minRatio, maxRatio];
-    var range =  ['#FFFFFF', '#F20e0e'];
+    var range =  ['#FFFFFF', '#F20E0E'];
 
     color.domain(domain);
     color.range(range);
@@ -193,6 +198,16 @@ function createCountries(g, path, world, sources, color, showPanel) {
     });
     showPanel(countryId);
   }
+
+  function updatePanelInfo(panel, countryData, formatNumber) {
+    panel.select("#country-name").text(countryData.name);
+    // for (let i=0; i<10; i++){
+    //     panel.select("#top-10").text(countryData.name + i);
+    // }
+
+    let songCount = Math.trunc(countryData.ratioEcoute * countryData.population);
+    panel.select("#song-count").text(songCount+ " écoutes annuelles totales");
+}
 
 
 })(L, d3, topojson, searchBar, localization);
