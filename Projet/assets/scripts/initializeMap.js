@@ -8,15 +8,6 @@
   "use strict";
 
   /***** Configuration *****/
-  var parties = [
-    {name: "Bloc Québécois", color: "#6ba7d9", abbreviation: "BQ"},
-    {name: "Conservateur", color: "#194f99", abbreviation: "PCC"},
-    {name: "Libéral", color: "#e9332f", abbreviation: "PLC"},
-    {name: "Indépendant", color: "grey", abbreviation: "Ind."},
-    {name: "Parti Vert", color: "#7bbd51", abbreviation: "PV"},
-    {name: "NPD-Nouveau Parti Démocratique", color: "#f28135", abbreviation: "NPD"}
-  ];
-
   var panel = d3.select("#panel");
   var map = L.map('map', {
     'worldCopyJump': true
@@ -98,7 +89,7 @@
       var searchBarElement = searchBar(autoCompleteSources);
       searchBarElement.search = function (id) {
         var feature = world.features.find(function (d) {  
-          return d.properties.id === id;
+          return Number(d.properties["id"]) === id;
         });
         var bound = d3.geoBounds(feature);
 
