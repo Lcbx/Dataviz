@@ -1,9 +1,7 @@
 /**
- * Fichier principal permettant de gérer la carte. Ce fichier utilise les autres fichiers
- * que vous devez compléter.
- *
- * /!\ Aucune modification n'est nécessaire dans ce fichier!
+ * Fichier principal permettant de gérer la carte.
  */
+ 
 (function (L, d3, topojson, searchBar, localization) {
   "use strict";
 
@@ -64,7 +62,7 @@
 	    }
       var path = createPath();
 
-      createDistricts(g, path, world, data, color, showPanel);
+      createCountries(g, path, world, data, color, showPanel);
       map.on("viewreset", function () {
         updateMap(mapSvg, g, path, world);
       });
@@ -106,38 +104,18 @@
           panel.style("display", "none");
         });
 
-      /**
-       * Affichage du panneau d'informations pour une certain circonscription.
-       *
-       * @param districtId    Le numéro de circonscription à utiliser pour afficher les bonnes informations.
-       */
+      
       function showPanel(countryName) {
-        // var countrySource = data.find(function (e) {
-        //   return countryName === e.id;
-        // });
-
         panel.style("display", "block");
-        //updatePanelInfo(panel, countrySource, localization.getFormattedNumber);
-        //updatePanelBarChart(barChartBarsGroup, barChartAxisGroup, countrySource, x, y, yAxis, color, parties)
       }
     });
 
-  /**
-   * Projete un point dans le repère de la carte.
-   *
-   * @param x   Le point X à projeter.
-   * @param y   Le point Y à projeter.
-   */
+
   function projectPoint(x, y) {
     var point = map.latLngToLayerPoint(new L.LatLng(y, x));
     this.stream.point(point.x, point.y);
   }
 
-  /**
-   * Trace un ensemble de coordonnées dans le repère de la carte.
-   *
-   * @return {*}  La transformation à utiliser.
-   */
   function createPath() {
     var transform = d3.geoTransform({point: projectPoint});
     return d3.geoPath().projection(transform);
@@ -145,8 +123,6 @@
 
 
   function colorScale(color, data) {
-    // TODO: Préciser le domaine de l'échelle en y associant chacun des partis politique de la liste spécifiée en paramètre.
-    //       De plus, préciser la gamme de couleurs en spécifiant les couleurs utilisées par chacun des partis.
     var ratios = data.map( d => d.ratioEcoute);
     var maxRatio = d3.max(ratios);
     var minRatio = d3.min(ratios);
@@ -157,6 +133,56 @@
     color.domain(domain);
     color.range(range);
   }
+
+  function initTileLayer(L, map) {
+
+   map.setView([57.3, -94.7], 3);
+
+   L.tileLayer(" https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png", {
+    maxZoom: 10,
+    minZoom: 1
+   }).addTo(map);
+
+}
+
+function initSvgLayer(map) {
+    var svg = d3.select(map.getPanes().overlayPane).append("svg"),
+        g = svg.append("g").attr("class", "leaflet-zoom-hide");
+
+    return svg
+}
+
+function createCountries(g, path, world, sources, color, showPanel) {
+   
+    for(var i = 0; i < sources.length; i++){
+        var countryName = sources[i].name;
+        var country = world.features.find(x => x.properties.NAME === countryName);
+        if (country){
+          country.properties.id = sources[i].id;
+          country.properties.spotify = sources[i].spotify;
+          country.properties.ratioEcoute = sources[i].ratioEcoute;
+        }
+    }
+
+    var countries = g.selectAll('path')
+        .data(world.features)
+        .enter()
+        .append('path')
+        .attr('d', path)
+        .attr('class', "country")
+        .attr('id', d => d.properties.NAME)
+        .attr('fill', d => d.properties.spotify === "1" ? color(d.properties.ratioEcoute) : "black")
+        .attr('fill-opacity', d => d.properties.spotify === "1" ? 0.7 : 1.0)
+        .attr('stroke', '#333333')
+        .on('click', d => {
+          console.log(d.properties.NAME);
+          var selectedCountry = d.properties.NAME;
+          g.selectAll(".country")
+            .classed("selected", d => (d.properties.NAME == selectedCountry));
+          showPanel(selectedCountry);
+        });
+
+}
 
   function search(map, g, countryId, bound, showPanel) {
     console.log(bound);
