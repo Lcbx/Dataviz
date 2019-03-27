@@ -76,7 +76,8 @@ function addSvgToHtml(selectorString, width, height) {
 						"August", "September", "October", "November", "December"];
 	var xAxis = d3.axisBottom(xScale).tickFormat(function (d, i) { return xTickLabels[i] });
 	var yTickLabels = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", ">10"];
-	var yAxis = d3.axisLeft(yScale).tickFormat(function (d, i) { return yTickLabels[i] });
+	var yAxisLeft = d3.axisLeft(yScale).tickFormat(function (d, i) { return yTickLabels[i] });
+	var yAxisRight = d3.axisRight(yScale).tickFormat(function (d, i) { return yTickLabels[i] });
 
 	/*** bump chart SVG ***/
     // use addSvgToHtml? --> will optimize code at the end
@@ -89,13 +90,11 @@ function addSvgToHtml(selectorString, width, height) {
 		.attr("id", "bumpChartGroup")
 		.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-
     d3.csv("./data/bumpChartData.csv").then(function (data) {
 
 		var dataGlobal = data.filter(d => d.Region == "global");
-        addAxes(bumpChartGroup, xAxis, yAxis, height, margin.bottom);
+        addAxes(bumpChartGroup, xAxis, yAxisLeft, yAxisRight, height, margin.bottom);
         createBumpChart(bumpChartGroup, dataGlobal, xScale, yScale, height);
-        
     })
 
 })(d3, localization);

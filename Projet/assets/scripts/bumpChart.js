@@ -9,39 +9,41 @@
  *
  * @param g         		Svg group where the bump chart should be created
  * @param xAxis     		horizontal axis
- * @param yAxis     		vertical axis
+ * @param yAxisLeft     	left vertical axis
+ * @param yAxisRight     	right vertical axis
  * @param height    		chart height
  * @param bottomMargin 	chart bottom margin
  */
-function addAxes(g, xAxis, yAxis, height, bottomMargin) {
-  // Axe horizontal
+function addAxes(g, xAxis, yAxisLeft, yAxisRight, height, bottomMargin) {
 
 	var padding = 0;
 
 	g.append("g")
 		.attr("class", "axis")
 		.attr("transform", "translate(10," + (height - bottomMargin) + ")")
-				.call(xAxis)
+		.call(xAxis)
         .selectAll("text")
         .attr("y", 0)
         .attr("x", 10)
         .attr("dy", 12)
         .attr("transform", "rotate(45)")
-				.style("text-anchor", "start");
+		.style("text-anchor", "start")
+		.style("font-size", "12px");
 				
-/*
-	g.append("text")
-		.attr("class", "axis-label")
-		.attr("text-anchor", "end")
-		.attr("x", width)
-		.attr("y", height - 8)
-		.text("put axis name here");
-*/	
+	// TODO: change hard coded translate distance for parameters 
 	g.append("g")
         .attr("class", "axis")
         .attr("transform", "translate(10,0)")
-					.call(yAxis);
-/*
+		.call(yAxisLeft)
+		.style("font-size", "14px");
+
+	g.append("g")
+		.attr("class", "axis")
+		.attr("transform", "translate(830,0)")
+		.call(yAxisRight)
+		.style("font-size", "14px");
+
+/*  // add axis labels ?
 	g.append("text")
 		.attr("class", "axis-label")
 		.attr("text-anchor", "end")
@@ -49,7 +51,14 @@ function addAxes(g, xAxis, yAxis, height, bottomMargin) {
 		.attr("y", 20)
 		.attr("transform", function(d) {
 			return "rotate(-90)"})
-        .text("put axis name here");
+		.text("put axis name here");
+
+	g.append("text")
+		.attr("class", "axis-label")
+		.attr("text-anchor", "end")
+		.attr("x", width)
+		.attr("y", height - 8)
+		.text("put axis name here");
 */
 }
 
@@ -70,19 +79,22 @@ function createBumpChart(g, data, x, y, height) {
 			.data(data)
 			.enter()
 			.append("g");
-			
+
+	// TODO: display interactively song info on line hover
 	bump.append("path")
 		.attr("class", "songPath")
-		.attr("stroke", "#E3E3E3")
-		.attr("stroke-width", "2")
+		.attr("stroke", createColor)
+		.attr("stroke-width", "1")
 		.attr("fill", "none")
 		.attr("d", createPath)
-		.on("mouseover", function(){d3.select(this).attr("stroke-width", "4")
-													.attr("stroke", "#000000");
-									d3.select(this.parentNode).raise();})
-													
-		.on("mouseout", function(d){d3.select(this).attr("stroke-width", "2")
-													.attr("stroke", "#E3E3E3");});
+		.on("mouseover", function(){d3.select(this).attr("stroke-width", "5");
+									d3.select(this.parentNode).raise();})									
+		.on("mouseout", function(d){d3.select(this).attr("stroke-width", "1");});
+
+	// TODO: use fixed colors instead of random ?
+	function createColor(d, i) {
+		return d3.interpolateRainbow(Math.random());
+	}
 
 	function createPath(d) {
 		var heightFactor = (y.range()[1] - y.range()[0])/10;
@@ -94,7 +106,6 @@ function createBumpChart(g, data, x, y, height) {
 			initialRank = d[x.domain()[0]];
 		}
 		path.push("M", 0, " ", y(initialRank));
-		
 		x.domain().slice(1).forEach(function(b, i) {
 		var rank = 0;
 		if (d[b] == "") {
@@ -102,20 +113,18 @@ function createBumpChart(g, data, x, y, height) {
 		} else {
 			rank = d[b];
 		}
-		path.push(" L ", x(b), " ", y(rank));
+		var prevRank = 0;
+		if (d[x.domain()[i]] == "") {
+			prevRank = 11;
+		} else {
+			prevRank = d[x.domain()[i]];
+		}
+		var cpXPosition = x(b)-(x(b)-x(x.domain()[i]))/2;
+		var prevYValue = y(prevRank);
+		path.push(" C ", cpXPosition, " ", prevYValue, ", ", cpXPosition,
+					" ", y(rank), ", ", x(b), " ", y(rank));
 		});
 		path = path.join("");
-		//console.log(path);
 		return path;
 	}
-
-	function curve(a, b, d) {
-		/*
-		var xTangent = 10;
-		return "C" + (x(a) + xTangent + x.bandwidth()) + "," + y(d[a + "-offset"]) + " "
-				+ (x(b) - xTangent) + "," + y(d[b + "-offset"]) + " "
-				+ x(b) + "," + y(d[b + "-offset"]);
-				*/
-	}
-
 }
