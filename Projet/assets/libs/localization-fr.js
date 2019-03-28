@@ -51,5 +51,28 @@ var localization = (function(d3) {
     })[0])(date);
   };
 
+  /**
+   * Formate un nombre selon les règles locales.
+   *
+   * @param number      Le nombre à formater.
+   * @return {string}   Le nombre formaté.
+   */
+  self.getFormattedNumber = function(number) {
+    if (number % 1 !== 0) {
+      number = number.toFixed(2).replace('.', ',')
+    }
+    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+  };
+
+  /**
+   * Format un pourcentage selon les règles locales.
+   *
+   * @param percent     Le pourcentage à formater.
+   * @return {string}   Le pourcentage formaté.
+   */
+  self.getFormattedPercent = function(percent) {
+    return d3.format(".1%")(percent).replace(".", ",");
+  };
+
   return self;
 })(d3);
