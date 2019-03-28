@@ -141,7 +141,7 @@
 
   function initTileLayer(L, map) {
 
-   map.setView([57.3, -94.7], 3);
+   map.setView([57.3, 0.0], 2);
 
    L.tileLayer(" https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png", {
     maxZoom: 10,
@@ -223,6 +223,10 @@ function createCountries(g, path, world, sources, color, showPanel) {
     g.attr("transform", "translate(" + -topLeft[0] + "," + -topLeft[1] + ")");
         
     g.selectAll('path').attr("d", path);
+  }
+
+  function reset(g) {
+    g.select(".selected").attr("class", "circonscription");
   }
 
 
