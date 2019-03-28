@@ -11,33 +11,8 @@
     'worldCopyJump': true
   });
 
-  var barChartMargin = {
-    top: 0,
-    right: 40,
-    bottom: 0,
-    left: 40
-  };
-  var barChartWidth = 300 - barChartMargin.left - barChartMargin.right;
-  var barChartHeight = 150 - barChartMargin.top - barChartMargin.bottom;
-
   /***** Échelles utilisées *****/
   var color = d3.scaleLinear();
-  var x = d3.scaleLinear().range([0, barChartWidth]);
-  var y = d3.scaleBand().range([0, barChartHeight]).padding(0.1);
-
-  var yAxis = d3.axisLeft(y);
-
-  /***** Création des éléments du diagramme à barres *****/
-  var barChartSvg = panel.select("svg")
-    .attr("width", barChartWidth + barChartMargin.left + barChartMargin.right)
-    .attr("height", barChartHeight + barChartMargin.top + barChartMargin.bottom);
-
-  var barChartGroup = barChartSvg.append("g")
-    .attr("transform", "translate(" + barChartMargin.left + "," + barChartMargin.top + ")");
-
-  var barChartBarsGroup = barChartGroup.append("g");
-  var barChartAxisGroup = barChartGroup.append("g")
-    .attr("class", "axis y");
 
   /***** Chargement des données *****/
   var promises = [];
@@ -186,6 +161,28 @@ function createCountries(g, path, world, sources, color, showPanel) {
           showPanel(selectedCountry);
         });
 
+              
+      var linear = d3.scaleLinear()
+        .domain([0,1])
+        .range(["rgb(255, 255, 255)", "rgb(242,14,14)"]);
+
+      var svg = d3.select("svg");
+
+      svg.append("g")
+        .attr("class", "legendLinear")
+        .attr("transform", "translate(20, 475)");
+
+      var legendLinear = d3.legendColor()
+        .title("Popularity")
+        .shapeWidth(30)
+        .orient('horizontal')
+        .scale(linear);
+
+      svg.select(".legendLinear")
+        .call(legendLinear);
+          
+        
+
 }
 
   function search(map, g, countryId, bound, showPanel) {
@@ -223,6 +220,7 @@ function createCountries(g, path, world, sources, color, showPanel) {
     g.attr("transform", "translate(" + -topLeft[0] + "," + -topLeft[1] + ")");
         
     g.selectAll('path').attr("d", path);
+
   }
 
   function reset(g) {
