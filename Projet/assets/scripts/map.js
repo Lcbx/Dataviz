@@ -1,28 +1,145 @@
-"use strict";
-
 /**
- * Fichier permettant de gérer l'affichage de la carte.
+ * Fichier principal permettant de gérer la carte.
  */
 
+(function (L, d3, topojson, searchBar, localization) {
+  "use strict";
 
-/**
- * Initialise le fond de carte qui doit être utilisé et la position d'affichage initial.
- *
- * @param L     Le contexte Leaflet.
- * @param map   La carte Leaflet.
- *
- * @see https://gist.github.com/d3noob/9211665
- */
-function initTileLayer(L, map) {
-  /* TODO: Initialiser le "tileLayer" avec les propriétés suivantes:
-       - URL du fond de carte: https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png;
-       - Zoom maximum: 10;
-       - Zoom minimum: 1.
+  /***** Configuration *****/
+  var panel = d3.select("#panel");
+  var map = L.map('map', {
+    'worldCopyJump': true
+  });
 
-     Régler l'affichage initial (view) de la carte aux valeurs suivantes:
-       - Coordonnées: [57.3, -94.7];
-       - Niveau de zoom: 4.
-   */
+  var barChartMargin = {
+    top: 0,
+    right: 40,
+    bottom: 0,
+    left: 40
+  };
+  var barChartWidth = 300 - barChartMargin.left - barChartMargin.right;
+  var barChartHeight = 150 - barChartMargin.top - barChartMargin.bottom;
+
+  /***** Échelles utilisées *****/
+  var color = d3.scaleLinear();
+  var x = d3.scaleLinear().range([0, barChartWidth]);
+  var y = d3.scaleBand().range([0, barChartHeight]).padding(0.1);
+
+  var yAxis = d3.axisLeft(y);
+
+  /***** Création des éléments du diagramme à barres *****/
+  var barChartSvg = panel.select("svg")
+    .attr("width", barChartWidth + barChartMargin.left + barChartMargin.right)
+    .attr("height", barChartHeight + barChartMargin.top + barChartMargin.bottom);
+
+  var barChartGroup = barChartSvg.append("g")
+    .attr("transform", "translate(" + barChartMargin.left + "," + barChartMargin.top + ")");
+
+  var barChartBarsGroup = barChartGroup.append("g");
+  var barChartAxisGroup = barChartGroup.append("g")
+    .attr("class", "axis y");
+
+  /***** Chargement des données *****/
+  var promises = [];
+  promises.push(d3.json("./data/world_data.json"));
+  promises.push(d3.csv("./data/world-country-names.csv"));
+
+  Promise.all(promises)
+    .then(function (results) {
+      var worldTopoJson = results[0];
+
+      var world = topojson.feature(worldTopoJson, worldTopoJson.objects.ne_50m_admin_0_countries);
+      var data = results[1];
+      colorScale(color, data);
+
+      /***** Initialisation de la carte *****/
+      initTileLayer(L, map);
+      var mapSvg = initSvgLayer(map);
+	    var g = undefined;
+	    
+      if (mapSvg) {
+		    g = mapSvg.select("g");
+	    }
+      var path = createPath();
+
+      createCountries(g, path, world, data, color, showPanel);
+      map.on("viewreset", function () {
+        updateMap(mapSvg, g, path, world);
+      });
+      updateMap(mapSvg, g, path, world);
+
+      /***** Recherche d'une circonscription *****/
+      var autoCompleteSources = d3.nest()
+        .key(function (d) {
+          return d.id;
+        })
+        .entries(data)
+        .map(function (d) {
+          return {
+            id: +d.values[0].id,
+            name: d.values[0].name
+          };
+        })
+        .sort(function (a, b) {
+          return d3.ascending(a.name, b.name);
+        });
+
+      var searchBarElement = searchBar(autoCompleteSources);
+      searchBarElement.search = function (id) {
+        var feature = world.features.find(function (d) {  
+          return Number(d.properties["id"]) === id;
+        });
+        var bound = d3.geoBounds(feature);
+
+        search(map, g, id, [
+          [bound[0][1], bound[0][0]],
+          [bound[1][1], bound[1][0]]
+        ], showPanel);
+      };
+
+      /***** Gestion du panneau d'informations *****/
+      panel.select("button")
+        .on("click", function () {
+          reset(g);
+          panel.style("display", "none");
+        });
+
+      
+      function showPanel(countryName) {
+        var countryData = data.find(function (e) {
+          return countryName === e.name;
+        });
+
+        panel.style("display", "block");
+        updatePanelInfo(panel, countryData, localization.getFormattedNumber);
+      }
+    });
+
+
+  function projectPoint(x, y) {
+    var point = map.latLngToLayerPoint(new L.LatLng(y, x));
+    this.stream.point(point.x, point.y);
+  }
+
+  function createPath() {
+    var transform = d3.geoTransform({point: projectPoint});
+    return d3.geoPath().projection(transform);
+  }
+
+
+  function colorScale(color, data) {
+    var ratios = data.map( d => d.ratioEcoute);
+    var maxRatio = d3.max(ratios);
+    var minRatio = d3.min(ratios);
+
+    var domain = [minRatio, maxRatio];
+    var range =  ['#FFFFFF', '#F20E0E'];
+
+    color.domain(domain);
+    color.range(range);
+  }
+
+  function initTileLayer(L, map) {
 
    map.setView([57.3, -94.7], 3);
 
@@ -33,41 +150,14 @@ function initTileLayer(L, map) {
 
 }
 
-/**
- * Initialise le contexte SVG qui devra être utilisé au-dessus de la carte Leaflet.
- *
- * @param map   La carte Leaflet.
- * @return      L'élément SVG créé.
- *
- * @see https://gist.github.com/d3noob/9211665
- */
 function initSvgLayer(map) {
-  // TODO: Créer l'élément SVG en vous basant sur l'exemple fourni. Assurez-vous de créer un élément "g" dans l'élément SVG.
     var svg = d3.select(map.getPanes().overlayPane).append("svg"),
         g = svg.append("g").attr("class", "leaflet-zoom-hide");
 
     return svg
 }
 
-/**
- * Crée les tracés des circonscriptions sur le contexte SVG qui se trouve au-dessus de la carte Leaflet.
- *
- * @param g             Le groupe dans lequel les tracés des circonscriptions doivent être créés.
- * @param path          La fonction qui doit être utilisée pour tracer les entités géométriques selon la bonne projection.
- * @param canada        Les entités géographiques qui doivent être utilisées pour tracer les circonscriptions.
- * @param sources       Les données contenant les informations sur chacune des circonscriptions.
- * @param color         L'échelle de couleurs qui est associée à chacun des partis politiques.
- * @param showPanel     La fonction qui doit être appelée pour afficher le panneau d'informations.
- */
-function createDistricts(g, path, world, sources, color, showPanel) {
-  /* TODO: Créer les tracés des circonscriptions. Assurez-vous de respecter les spécifications suivantes:
-       - La couleur de la circonscription doit correspondre à la couleur du parti du candidat gagnant;
-       - L'opacité de la couleur (fill-opacity) doit être de 80%;
-       - La couleur des traits doit être "#333";
-       - Lorsqu'une circonscription est cliquée, celle-ci doit devenir sélectionnée (classe "selected") et le panneau
-         d'informations associé à cette circonscription doit faire son apparition (utiliser la fonction "showPanel").
-         Il est à noter qu'il est possible de sélectionner uniquement une circonscription à la fois.
-   */
+function createCountries(g, path, world, sources, color, showPanel) {
    
     for(var i = 0; i < sources.length; i++){
         var countryName = sources[i].name;
@@ -90,7 +180,6 @@ function createDistricts(g, path, world, sources, color, showPanel) {
         .attr('fill-opacity', d => d.properties.spotify === "1" ? 0.7 : 1.0)
         .attr('stroke', '#333333')
         .on('click', d => {
-          console.log(d.properties.NAME);
           var selectedCountry = d.properties.NAME;
           g.selectAll(".country")
             .classed("selected", d => (d.properties.NAME == selectedCountry));
@@ -99,44 +188,43 @@ function createDistricts(g, path, world, sources, color, showPanel) {
 
 }
 
-/**
- * Met à jour la position et la taille de l'élément SVG, la position du groupe "g" et l'affichage des tracés lorsque
- * la position ou le zoom de la carte est modifié.
- *
- * @param svg       L'élément SVG qui est utilisé pour tracer les éléments au-dessus de la carte Leaflet.
- * @param g         Le groupe dans lequel les tracés des circonscriptions ont été créés.
- * @param path      La fonction qui doit être utilisée pour tracer les entités géométriques selon la bonne projection.
- * @param canada    Les entités géographiques qui doivent être utilisées pour tracer les circonscriptions.
- *
- * @see https://gist.github.com/d3noob/9211665
- */
-function updateMap(svg, g, path, world) {
-  // TODO: Mettre à jour l'élément SVG, la position du groupe "g" et l'affichage des tracés en vous basant sur l'exemple fourni.
-  var countries = path.bounds(world);
-  var topLeft = countries[0], bottomRight = countries[1];
+  function search(map, g, countryId, bound, showPanel) {
+    map.fitBounds(bound, {animate: true, pan: {animate: true, duration: 1, easeLinearity: 0.5}, maxZoom : 8});
+    g.selectAll(".country").classed("selected", d => {
+      return (d.properties.id == countryId)
+    });
+    showPanel(countryId);
+  }
 
-  svg.attr("width", bottomRight[0] - topLeft[0])
-     .attr("height", bottomRight[1] - topLeft[1])
-     .style("left", topLeft[0] + "px")
-     .style("top", topLeft[1] + "px");
-  
-  g.attr("transform", "translate(" + -topLeft[0] + "," + -topLeft[1] + ")");
-      
-  g.selectAll('path').attr("d", path);
-}
+  function updatePanelInfo(panel, countryData, formatNumber) {
+    panel.select("#country-name").text(countryData.name);
 
-function updatePanelInfo(panel, districtSource, formatNumber) {
-
-    panel.select("#district-name").text(districtSource.name + " [" + districtSource.id + "]");
-    panel.select("#elected-candidate").text(districtSource.results[0].candidate + " ("+ districtSource.results[0].party + ")");
-    let votesCount = 0;
-    for (let i=0; i<districtSource.results.length; i++){
-        votesCount += districtSource.results[i].votes;
+    var values = Object.values(countryData);
+    var compteur = 0;
+    for (var i = 8; i <= values.length; i+=2) {
+      var position = i - (7 + compteur);
+      panel.select("#top"+ position).text(position + ". " + values[i]);
+      compteur++;
     }
-    panel.select("#votes-count").text(votesCount+ " votes");
-}
 
-function reset(g) {
-  // TODO: Réinitialiser l'affichage de la carte en retirant la classe "selected" de tous les éléments.
-    g.select(".selected").attr("class", "circonscription");
-}
+    let songCount = Math.trunc(countryData.ratioEcoute * countryData.population);
+    panel.select("#song-count").text(songCount+ " écoutes annuelles totales");
+  }
+
+  function updateMap(svg, g, path, countriesData) {
+    var countries = path.bounds(countriesData);
+    var topLeft = countries[0], bottomRight = countries[1];
+
+    svg.attr("width", bottomRight[0] - topLeft[0])
+       .attr("height", bottomRight[1] - topLeft[1])
+       .style("left", topLeft[0] + "px")
+       .style("top", topLeft[1] + "px");
+    
+    g.attr("transform", "translate(" + -topLeft[0] + "," + -topLeft[1] + ")");
+        
+    g.selectAll('path').attr("d", path);
+  }
+
+
+
+})(L, d3, topojson, searchBar, localization);
