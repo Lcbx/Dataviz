@@ -201,9 +201,15 @@ function createCountries(g, path, world, sources, color, showPanel) {
 
   function updatePanelInfo(panel, countryData, formatNumber) {
     panel.select("#country-name").text(countryData.name);
-    // for (let i=0; i<10; i++){
-    //     panel.select("#top-10").text(countryData.name + i);
-    // }
+
+    var values = Object.values(countryData);
+    var compteur = 0;
+    for (var i = 8; i <= values.length; i+=2) {
+      var position = i - (7 + compteur);
+      console.log(position);
+      panel.select("#top"+ position).text(position + ". " + values[i]);
+      compteur++;
+    }
 
     let songCount = Math.trunc(countryData.ratioEcoute * countryData.population);
     panel.select("#song-count").text(songCount+ " écoutes annuelles totales");

@@ -126,11 +126,6 @@ function updateMap(svg, g, path, world) {
 }
 
 function updatePanelInfo(panel, districtSource, formatNumber) {
-  /* TODO: Mettre à jour les informations textuelles suivantes:
-       - Le nom de la circonscription ainsi que le numéro;
-       - La nom du candidat gagnant ainsi que son parti;
-       - Le nombre total de votes pour tous les candidats (utilisez la fonction "formatNumber" pour formater le nombre).
-   */
 
     panel.select("#district-name").text(districtSource.name + " [" + districtSource.id + "]");
     panel.select("#elected-candidate").text(districtSource.results[0].candidate + " ("+ districtSource.results[0].party + ")");
@@ -141,77 +136,6 @@ function updatePanelInfo(panel, districtSource, formatNumber) {
     panel.select("#votes-count").text(votesCount+ " votes");
 }
 
-/**
- * Met à jour le diagramme à bandes horizontales à partir des nouvelles données de la circonscription sélectionnée.
- *
- * @param gBars             Le groupe dans lequel les barres du graphique doivent être créées.
- * @param gAxis             Le groupe dans lequel l'axe des Y du graphique doit être créé.
- * @param districtSource    Les données associées à une circonscription.
- * @param x                 L'échelle X.
- * @param y                 L'échelle Y.
- * @param yAxis             L'axe des Y.
- * @param color             L'échelle de couleurs qui est associée à chacun des partis politiques.
- * @param parties           Les informations à utiliser sur les différents partis.
- *
- * @see https://bl.ocks.org/hrecht/f84012ee860cb4da66331f18d588eee3
- */
-function updatePanelBarChart(gBars, gAxis, districtSource, x, y, yAxis, color, parties) {
-  /* TODO: Créer ou mettre à jour le graphique selon les spécifications suivantes:
-       - Le nombre de votes des candidats doit être affiché en ordre décroissant;
-       - Le pourcentage obtenu par chacun des candidat doit être affiché à droite de le barre;
-       - La couleur de la barre doit correspondre à la couleur du parti du candidat. Si le parti du candidat n'est pas
-         dans le domaine de l'échelle de couleurs, la barre doit être coloriée en gris;
-       - Le nom des partis doit être affiché sous la forme abrégée. Il est possible d'obtenir la forme abrégée d'un parti
-         via la liste "parties" passée en paramètre. Il est à noter que si le parti ne se trouve pas dans la liste "parties",
-         vous devez indiquer "Autre" comme forme abrégée.
-   */
-
-    let abbreviates = parties.map(d => d.abbreviation);
-    let partiesNames = parties.map(d => d.name);
-    let axisNames = [];
-    
-    for (let i=0; i<districtSource.results.length; i++) {
-        let pos = partiesNames.indexOf(districtSource.results[i].party);
-        if(pos > -1){
-            axisNames[i] = abbreviates[pos];
-        } else {
-            axisNames[i] = "Autre";
-        }
-    }
-
-        gBars.selectAll("rect").remove();
-
-        gBars.selectAll("rect")
-         .data(districtSource.results)
-         .enter()
-         .append("rect")
-         .attr("class","bar")
-         .attr("x", 0)
-         .attr("y", d => y(d.candidate))
-         .attr("width", d => x(d.votes))
-         .attr("height", y.bandwidth())
-         .attr("fill", d => color.domain().includes(d.party) ? color(d.party) : "grey");
-
-        gBars.selectAll("text").remove();
-        gBars.selectAll("text")
-            .data(districtSource.results)
-            .enter()
-            .append("text")
-            .text(d => d.percent)
-            .attr("x", d => x(d.votes)+5)
-            .attr("y", d => y(d.candidate)+ y.bandwidth()/2 + 5);
-
-    yAxis.tickFormat(function(d, i){return axisNames[i];});
-    gAxis.selectAll("g").remove();
-    gAxis.append("g").call(yAxis);
-
-}
-
-/**
- * Réinitialise l'affichage de la carte lorsque la panneau d'informations est fermé.
- *
- * @param g     Le groupe dans lequel les tracés des circonscriptions ont été créés.
- */
 function reset(g) {
   // TODO: Réinitialiser l'affichage de la carte en retirant la classe "selected" de tous les éléments.
     g.select(".selected").attr("class", "circonscription");
