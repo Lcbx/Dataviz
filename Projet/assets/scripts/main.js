@@ -19,9 +19,9 @@ function addSvgToHtml(selectorString, width, height) {
 
 (function (d3, localization) {
 	"use strict";
-	/**
-	 * Radar chart initialisation 
-	 */
+	/***************/
+	/* Radar-Chart */
+	/***************/
 	// Radar chart constants
 	const radarChartAxes = [
 		"danceability", "energy", "speechiness", "acousticness",
@@ -43,12 +43,14 @@ function addSvgToHtml(selectorString, width, height) {
 	const radarChartScale = createScale(radarChartConfiguration.radius, 1.0);
 	drawAxes(radarChartGroup, radarChartAxes, radarChartConfiguration.radius);
 	drawAxisNames(radarChartGroup, radarChartAxes, radarChartConfiguration.radius);
-	drawTicks(radarChartGroup, radarChartConfiguration.radius, radarChartConfiguration.scaleTicks);
+	drawTicks(radarChartGroup, radarChartAxes.length, radarChartConfiguration.radius, radarChartConfiguration.scaleTicks);
 
 	d3.csv('./data/Data treatment/completeDataset.csv').then(data => {
 		// Radar chart setup
 		const radarChartData = calculateBasicStatistics(data, radarChartAxes);
-		drawData(radarChartGroup, radarChartData.averages, radarChartScale, radarChartConfiguration.radius);
+		const radarChartColor = createColorScale(radarChartData.regionAverages);
+		drawData(radarChartGroup, radarChartData.monthAverages, radarChartScale,
+			radarChartColor, radarChartConfiguration.radius);
 	});
 
     /**************************/
