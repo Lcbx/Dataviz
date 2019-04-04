@@ -204,6 +204,18 @@ p {
   }
 }
 
+div.tooltip {
+  position: absolute;
+  text-align: center;
+  width: 180px;
+  padding: 2px;
+  font: 16px sans-serif;
+  border: 1px solid black;
+  border-radius: 8px;
+  background-color: white;
+  pointer-events: none; /* keep the mouseover when over the tooltip */
+}
+
 #bumpChartSvg{
 	
 }
