@@ -41,7 +41,7 @@ svg.append("g")
 
 // Build color scale
 var colors = d3.scaleLinear()
-	.range(["white", "#1db954"])
+	.range(["#e8f8ed", "#1db954"])
   	.domain([0,100]);
 
 // Define the div for the tooltip
@@ -80,3 +80,16 @@ Promise.all(promises)
                 .style("opacity", 0);	
     	  })
 })
+
+svg.append("g")
+	.attr("class", "legendLinear")
+	.style("font-size","10px")
+	.attr("transform", "translate(250, -40)");
+
+var legendLinear = d3.legendColor()
+	.shapeWidth(30)
+	.orient('horizontal')
+	.scale(colors);
+
+svg.select(".legendLinear")
+	.call(legendLinear);

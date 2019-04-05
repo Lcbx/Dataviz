@@ -72,7 +72,7 @@ p {
 /***** Search bar *****/
 #search-bar {
   position: absolute;
-  top: 455px;
+  top: 480px;
   left: 300px;
   display: flex;
   width: 200px;
