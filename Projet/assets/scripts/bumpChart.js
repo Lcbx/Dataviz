@@ -80,20 +80,59 @@ function createBumpChart(g, data, x, y, height) {
 			.enter()
 			.append("g");
 
-	// TODO: display interactively song info on line hover
+	// creates song paths displayed on the "default" view
 	bump.append("path")
-		.attr("class", "songPath")
+	.attr("class", "defaultSongPath")
+	.attr("fill", "none")
+	.attr("stroke", createColor)
+	.attr("stroke-width", "1")
+	.attr("d", createPath);
+
+	// creates wider song paths over default paths for a better mouse hover event management
+	bump.append("path")
+		.attr("class", "frontSongPath")
 		.attr("stroke", createColor)
-		.attr("stroke-width", "1")
 		.attr("fill", "none")
 		.attr("d", createPath)
-		.on("mouseover", function(){d3.select(this).attr("stroke-width", "5");
-									d3.select(this.parentNode).raise();})									
-		.on("mouseout", function(d){d3.select(this).attr("stroke-width", "1");});
+		.attr("stroke-width", "20")
+		.attr("stroke-opacity", "0")
+		.on("mouseover", function(d){selectPath(this); hideDefaultPaths();})							
+		.on("mouseout", function(d){unselectPath(this); showDefaultPaths();});
+
+		
+	function selectPath(path) {
+		d3.select(path)
+			.attr("stroke-width", "8")
+			.attr("stroke-opacity", "1");
+		d3.select(path.parentNode).raise();
+	}
+
+	function unselectPath(path) {
+		d3.select(path)
+			.attr("stroke-opacity", "0")
+			.attr("stroke-width", "20");
+	}
+
+	function hideDefaultPaths(){
+		d3.selectAll(".defaultSongPath")
+			.attr("stroke-opacity", "0.3");
+	}
+
+	function showDefaultPaths(){
+		d3.selectAll(".defaultSongPath")
+			.attr("stroke-opacity", "1");
+	}
 
 	// TODO: use fixed colors instead of random ?
 	function createColor(d, i) {
-		return d3.interpolateRainbow(Math.random());
+		var randomNum = (d.songId.charCodeAt(0)+
+							d.songId.charCodeAt(2)+
+							d.songId.charCodeAt(4)+
+							d.songId.charCodeAt(6)+
+							d.songId.charCodeAt(8))%100;
+		//console.log(randomNum/100);
+		
+		return d3.interpolateRainbow(randomNum/100);
 	}
 
 	function createPath(d) {
@@ -121,6 +160,7 @@ function createBumpChart(g, data, x, y, height) {
 		}
 		var cpXPosition = x(b)-(x(b)-x(x.domain()[i]))/2;
 		var prevYValue = y(prevRank);
+		// Adding curves to chart
 		path.push(" C ", cpXPosition, " ", prevYValue, ", ", cpXPosition,
 					" ", y(rank), ", ", x(b), " ", y(rank));
 		});

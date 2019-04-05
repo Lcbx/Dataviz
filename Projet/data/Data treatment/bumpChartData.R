@@ -5,6 +5,7 @@ data <- read.csv("/home/jean-michel/Documents/École/INF8808/TPs/data.csv", stri
 
 data <- data[!(data$Position > 10), ]
 data <- data[!(data$Region == "lu"), ] # missing values for "lu"
+data <- data[!(data$Date == "2018-01-01"), ] # missing values for "lu"
 
 for (row in 1:nrow(data)) {
   url = unlist(strsplit(as.character(data[row, "URL"]), "/"))
@@ -17,6 +18,7 @@ data['firstDayOfMonth'] <- timeFirstDayInMonth(data$Date)
 countries = unique(data$Region)
 months <- split(unique(data$firstDayOfMonth), seq_along(months))
 months <- months[-14]
+months <- months[1:12]
 
 completeSongRanks = data[0,]
 completeSongRanks$firstDayOfMonth = NULL
@@ -25,6 +27,7 @@ completeSongRanks$firstDayOfMonth = NULL
 for (country in countries) {
   dataRegion <- data[(data$Region == country),]
   for (month in months) {
+    print(month)
     dataRegionMonth <- dataRegion[(dataRegion$firstDayOfMonth == month),]
     songIds <- unique(dataRegionMonth$songId)
     songRanks = data[0,]
@@ -36,7 +39,7 @@ for (country in countries) {
       #print(paste("Country: ", country, "Month: ", month, "Song: ", song, "Avg rank: ", sum(dataRegionMonthSong$Position)))
     }
     songRanks <- songRanks[order(-songRanks$Position),]
-    songRanks <- songRanks[1:10, ]
+    songRanks <- songRanks[1:10, ]   
     for (i in 1:10) {
       songRanks[i,"Position"] = i
     }
@@ -44,27 +47,26 @@ for (country in countries) {
   }
 }
 
-completeSongRanks <- na.omit(completeSongRanks)
-completeSongRanks <- completeSongRanks[!(completeSongRanks$Month=="2018-01-01"),]
-months <- unique(completeSongRanks$Month)
 
 # add song not in top 10 for every months by country
 for (country in countries) {
+  
   dataRegion <- completeSongRanks[(completeSongRanks$Region == country),]
   dataRegionSongs <- dataRegion[!duplicated(dataRegion$songId), ]
   dataRegionSongs$Month = NULL
   dataRegionSongs$Position = NULL
   dataRegionSongs$Streams = NULL
   for (m in months) {
-    dataRegionSongs[m] = c("")
+    #print(toString(m))
+    dataRegionSongs[toString(m)] = c("")
   }
   #completeDataRegion <- dataRegionSongs[0,]
   for (month in months) {
-    dataRegionMonth <- dataRegion[(dataRegion$Month == month),]
+    dataRegionMonth <- dataRegion[(dataRegion$Month == toString(month)),]
     for (song in 1:nrow(dataRegionSongs)) {
       for (row in 1:nrow(dataRegionMonth)) {
         if (dataRegionSongs[song,]$songId == dataRegionMonth[row, "songId"]) {
-          dataRegionSongs[song,month] = dataRegionMonth[row,"Position"]
+          dataRegionSongs[song,toString(month)] = dataRegionMonth[row,"Position"]
           break
         }
       }
