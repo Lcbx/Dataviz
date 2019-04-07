@@ -5,7 +5,8 @@
 
 body {
 	margin-right: 3%;
-	margin-left: 3%;
+  margin-left: 3%;
+  overflow-x: hidden;
 }
 
 .error {
