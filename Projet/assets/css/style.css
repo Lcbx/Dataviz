@@ -63,6 +63,7 @@ li {
 
 #map {
   position: relative;
+  margin-top: 10px;
   margin-right: auto;
   margin-left:  auto;
   max-width: 1000px;
@@ -83,11 +84,6 @@ li {
 
 /***** Map search bar *****/
 .search-bar {
-  /*
-  position: absolute;
-  top: 480px;
-  left: 300px;
-  */
   display: flex;
   width: 200px;
   max-width: 100%;

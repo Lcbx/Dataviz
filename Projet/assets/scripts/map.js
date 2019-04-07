@@ -82,9 +82,10 @@
       
       function showPanel(countryName) {
         var countryData = data.find(function (e) {
-          return countryName === e.name;
+          if(countryName == e.id){
+            return e.name;
+          }
         });
-        
 
         panel.style("display", "block");
         updatePanelInfo(panel, countryData, localization.getFormattedNumber);
@@ -211,6 +212,7 @@ function createCountries(g, path, world, sources, color, showPanel) {
 
   function updateMap(svg, g, path, countriesData) {
     var countries = path.bounds(countriesData);
+    console.log(countriesData);
     var topLeft = countries[0], bottomRight = countries[1];
 
     svg.attr("width", bottomRight[0] - topLeft[0])
