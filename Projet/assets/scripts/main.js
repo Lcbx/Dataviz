@@ -102,5 +102,51 @@ function addSvgToHtml(selectorString, width, height) {
 		setSearchHandler(bumpChartGroup, searchBarElement, data, xScale, yScale, height);
 	});
 	
+	
+	/**
+	 * Bar chart initialisation 
+	 */
+	 
+	 
+	 
+	var x = d3.scaleLinear().range([0, width]);
+	var y = d3.scaleBand().range([height, 0]);
+	
+	var barChartGroup = d3.select("#barchart")
+        .append("svg")
+		.attr("id", "barchartSvg")
+		.attr("width", width + margin.left + margin.right)
+		.attr("height", height + margin.top + margin.bottom)
+        .append("g")
+		.attr("id", "barchartGroup")
+		.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+	  
+	d3.csv("./data/artists.csv").then(function(data) {
+	  
+		console.log(data);
+		data.sort( (a,b) => (b.danceability/b.nTracks - a.danceability/a.nTracks) );
+		 
+		var danceabilityList = data.slice(0,10);
+		console.log(danceabilityList);
+		
+		x.domain([0, d3.max(danceabilityList, d => d.danceability/d.nTracks)]);
+		y.domain(data.map(d => d.Artist));
+
+		barChartGroup.append("g")
+			.attr("class", "y axis")
+			.attr("background-color","#F1F3F3") 
+			.call(d3.axisLeft(y));
+
+		barChartGroup.selectAll(".bar")
+			.data(data)
+		  .enter().append("rect")
+			.attr("class", "bar")
+			.attr("fill", "steelblue")
+			.attr("x", 0)
+			.attr("height", y.bandwidth())
+			.attr("y", d => y(d.Artist))
+			.attr("width", d => x(d.danceability/d.nTracks));
+	});
+	 
 
 })(d3, localization);
