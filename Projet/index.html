@@ -20,11 +20,13 @@ in which countries ?
 
 
   <h2>What is spotify ?</h2>
-  <p>
+  <div><p>
 Spotify is an audio streaming platform launched by Spotify AB on 7 October 2008. </br>
 It provides access to over 40 millions DRM-protected tracks and podcasts from record labels and media companies. </br> It follows a freemium policy (basic features are available free of charge with advertisement while additional features are locked behind a subscription paywall) ; </br> this has allowed the website to gather 207 million monthly active users, including 96 million paying subscribers (as of February 2019)." [1] </br></br>
 As you can see below, it is popular in multiple countries in both Europe, America and Asia. </br>  Recently, a dataset of the stream count of the top 200 songs of Spotify per day in 2017 was released. That dataset can be used to answer some questions, such as : </br> which songs were popular in each country last year? The redder the country, the more Spotify is popular. Countries in black do not have access to Spotify.
-  </p>
+  </p></div>
+  
+  
   <div id="map-search-bar" class="search-bar">
       <input title="search-input" type="text" placeholder="Search a country...">
       <button title="Rechercher">
@@ -46,9 +48,10 @@ As you can see below, it is popular in multiple countries in both Europe, Americ
     <span class="pull-right" id="song-count">En nombre d'écoutes annuelles</span>
   </aside>
    
-  <div id="bumpChartDiv" >
+  
     <h2>How songs popularity evolve over time</h2>
     <div>The following rank chart shows the top 10 songs ranking over the year. </div>
+	<div id="bumpChartDiv" >
     <div id="bump-search-bar" class="search-bar"­>
         <input title="search-input" type="text" placeholder="Search a country...">
         <button title="Search">
@@ -61,7 +64,7 @@ As you can see below, it is popular in multiple countries in both Europe, Americ
   
   <h2>What's in a song ?</h2>
   <table><tr>
-    <td style="padding-top:30px; padding-left:15px;"><ul type="square">
+    <td style="padding-top:4%; padding-left:1%; min-width:500px;"><ul type="square">
 <li><i>Danceability</i> describes how suitable a track is for dancing. </li>
 <li><i>Energy</i> represents a perceptual measure of intensity and activity. </li>
 <li><i>Instrumentalness</i> is a rating of whether the track has vocals. </li>
@@ -77,7 +80,7 @@ As you can see below, it is popular in multiple countries in both Europe, Americ
   
   
   <h2>How do these features evolve over the year?</h2>
-  <div>The feature's intensity in a song varies according to the intensity of the green color<div>
+  <div>The feature's intensity in a song varies according to the intensity of the green color</div>
   <div id="heatmap"></div>
 
   
