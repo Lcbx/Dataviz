@@ -90,11 +90,17 @@ function addSvgToHtml(selectorString, width, height) {
 		.attr("id", "bumpChartGroup")
 		.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-    d3.csv("./data/bumpChartData.csv").then(function (data) {
+	//console.log(bumpChartGroup);
 
-		var dataGlobal = data.filter(d => d.Region == "global");
+	var completeBumpDataset = d3.csv("./data/bumpChartData.csv");
+
+    d3.csv("./data/bumpChartData.csv").then(function (data) {
+		var dataGlobal = data.filter(d => d.Region == "Global");
         addAxes(bumpChartGroup, xAxis, yAxisLeft, yAxisRight, height, margin.bottom);
-        createBumpChart(bumpChartGroup, dataGlobal, xScale, yScale, height);
-    })
+		createBumpChart(bumpChartGroup, dataGlobal, xScale, yScale, height);
+		var searchBarElement = setSearchBarParameters(data);
+		setSearchHandler(bumpChartGroup, searchBarElement, data, xScale, yScale, height);
+	});
+	
 
 })(d3, localization);

@@ -23,14 +23,15 @@ in which countries ?
   <p>
 Spotify is an audio streaming platform launched by Spotify AB on 7 October 2008. It provides access to over 40 millions DRM-protected tracks and podcasts from record labels and media companies. It follows a freemium policy (basic features are available free of charge with advertisement while additional features are locked behind a subscription paywall) ; this has allowed the website to gather 207 million monthly active users, including 96 million paying subscribers (as of February 2019)." [1] </br></br>
 As you can see below, it is popular in multiple countries in both Europe, America and Asia. Recently, a dataset of the stream count of the top 200 songs of Spotify per day in 2017 was released. That dataset can be used to answer some questions, such as : which songs where popular in each country last year? Red countries are where Spotify is available and black where it is not. The more a country is red, the more Spotify is popular.
-       </p>
-  <div id="map"></div>
-  <div id="search-bar">
-      <input title="search-input" type="text" placeholder="Rechercher un pays...">
+  </p>
+  <div id="map-search-bar" class="search-bar">
+      <input title="search-input" type="text" placeholder="Search a country...">
       <button title="Rechercher">
         <img alt="Rechercher" src="./assets/img/search.svg">
       </button>
   </div>
+  <div id="map"></div>
+
   <aside id="panel">
     <button title="Fermer">
       <img alt="Fermer" src="./assets/img/close.svg">
@@ -46,7 +47,13 @@ As you can see below, it is popular in multiple countries in both Europe, Americ
    
   <div id="bumpChartDiv"­>
     <h2>How songs popularity evolve over time</h2>
-    <p>The next rank chart shows the top 10 songs over a year. In the final visualization, the user will be able to filter by country.</p>
+    <p>The next rank chart shows the top 10 songs ranking over the year. </p>
+    <div id="bump-search-bar">
+        <input title="search-input" type="text" placeholder="Rechercher un pays...">
+        <button title="Rechercher">
+          <img alt="Rechercher" src="./assets/img/search.svg">
+        </button>
+    </div>
   </div>
   <p>But that is not all : the data set also contains song features, which will allow us to analyze the trends between and within countries. Let us first introduce those features :</p>
   <h2>What's in a song ?</h2>

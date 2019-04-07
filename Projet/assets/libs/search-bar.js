@@ -1,4 +1,4 @@
-var searchBar = function(sources) {
+var searchBar = function(sources, searchBarId) {
   "use strict";
 
   var self = {};
@@ -9,7 +9,7 @@ var searchBar = function(sources) {
 
   // Initialisation de l'auto-complétion
   new autoComplete({
-    selector: "#search-bar input",
+    selector: "#" + searchBarId + " input",
     minChars: 1,
     source: function(term, suggest) {
       term = term.toLowerCase();
@@ -34,7 +34,7 @@ var searchBar = function(sources) {
   });
 
   // Ajout d'évènements sur la barre de recherche et le bouton.
-  var searchBarInput = d3.select("#search-bar input");
+  var searchBarInput = d3.select("#" + searchBarId + " input");
   searchBarInput.on("keydown", function () {
     if (d3.event.key === "Enter") {
       validateInput();
@@ -44,7 +44,7 @@ var searchBar = function(sources) {
       searchBarInput.classed("error", false);
     }
   });
-  d3.select("#search-bar button")
+  d3.select("#" + searchBarId + " button") //"#search-bar button"
     .on("click", validateInput);
 
   /**
