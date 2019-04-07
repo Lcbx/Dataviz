@@ -121,9 +121,6 @@ li {
   height: 18px;
 }
 
-
-
-
 /***** Panel *****/
 #panel {
   position: absolute;
@@ -230,6 +227,4 @@ div.tooltip {
   pointer-events: none; /* keep the mouseover when over the tooltip */
 }
 
-#bumpChartSvg{
-	
-}
+
