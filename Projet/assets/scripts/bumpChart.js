@@ -100,12 +100,46 @@ function createBumpChart(g, data, x, y, height) {
 		.attr("trackName", function(d) {return d["Track.Name"];})
 		.attr("artist", function(d) {return d["Artist"];})
 		.attr("trackId", function(d) {return d["songId"];})
-		.on("mouseover", function(){selectPath(this); hideDefaultPaths();})							
-		.on("mouseout", function(){unselectPath(this); showDefaultPaths();});
+		.on("mouseover", function(d){selectPath(this);
+									hideDefaultPaths();
+									tip.show(d);})
+		.on("mouseout", function(d){unselectPath(this); 
+									showDefaultPaths();
+									tip.hide();});
+
+	// tooltip initialization
+	var	tip = d3.tip()
+				.attr('class', 'bump-tip')
+				.html(function(d) {return d["Track.Name"]; })
+				.offset(function(d) {
+					let pos = getPosition(d)-5.5;
+					return [-10, pos*74];
+				  });
+	
+	bump.call(tip);
+
+	function showSongInfo() {
+		bump.append()
+	}
+
+	// get horizontal position of the maximum rank value
+	function getPosition(song) {
+		var ranking = Object.values(song).slice(4, 16);
+		
+		ranking = ranking.map(function (d) {
+			var position = 0;
+			if (d!="") {
+				position = 11 - parseInt(d);
+			}
+			return position;
+		  });
+		
+		return ranking.indexOf(Math.max(...ranking));
+
+	}
 
 	// make selected path appear on front	
 	function selectPath(path) {
-		console.log(path.getAttribute("trackName"));
 		d3.select(path)
 			.attr("stroke-width", "8")
 			.attr("stroke-opacity", "1");
@@ -162,7 +196,8 @@ function createBumpChart(g, data, x, y, height) {
 		}
 		var cpXPosition = x(b)-(x(b)-x(x.domain()[i]))/2;
 		var prevYValue = y(prevRank);
-		// Adding curves to chart
+
+		// Add curves to chart
 		path.push(" C ", cpXPosition, " ", prevYValue, ", ", cpXPosition,
 					" ", y(rank), ", ", x(b), " ", y(rank));
 		});
