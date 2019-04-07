@@ -113,48 +113,8 @@ p {
   height: 18px;
 }
 
-/***** Bump chart search bar *****/
-#bump-search-bar {
-  /*
-  position: absolute;
-  top: 480px;
-  left: 300px;
-  */
-  display: flex;
-  width: 200px;
-  max-width: 100%;
-}
 
-#bump-search-bar > input {
-  line-height: 35px;
-  padding: 0 10px;
-  border: 1px solid #999;
-  flex: 1;
-  font-size: 11pt;
-}
 
-#bump-search-bar > input:focus {
-  outline: 0;
-  -webkit-box-shadow: inset 0 2px 2px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);
-  box-shadow: inset 0 2px 2px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);
-}
-
-#bump-search-bar > button {
-  background-color: #4c7d95;
-  border: 1px solid #999;
-  border-left: 0;
-  outline: 0;
-  flex-basis: 40px;
-  cursor: pointer;
-}
-
-#bump-search-bar > button:hover {
-  background-color: #2b4d5b;
-}
-
-#bump-search-bar > button img {
-  height: 18px;
-}
 
 /***** Panel *****/
 #panel {

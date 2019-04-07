@@ -97,11 +97,15 @@ function createBumpChart(g, data, x, y, height) {
 		.attr("d", createPath)
 		.attr("stroke-width", "20")
 		.attr("stroke-opacity", "0")
-		.on("mouseover", function(d){selectPath(this); hideDefaultPaths();})							
-		.on("mouseout", function(d){unselectPath(this); showDefaultPaths();});
+		.attr("trackName", function(d) {return d["Track.Name"];})
+		.attr("artist", function(d) {return d["Artist"];})
+		.attr("trackId", function(d) {return d["songId"];})
+		.on("mouseover", function(){selectPath(this); hideDefaultPaths();})							
+		.on("mouseout", function(){unselectPath(this); showDefaultPaths();});
 
 	// make selected path appear on front	
 	function selectPath(path) {
+		console.log(path.getAttribute("trackName"));
 		d3.select(path)
 			.attr("stroke-width", "8")
 			.attr("stroke-opacity", "1");
