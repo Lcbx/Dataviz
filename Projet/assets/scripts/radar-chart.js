@@ -39,6 +39,20 @@ function calculateBasicStatistics(data, columns, groupBy="Region") {
 	return { monthAverages, regionAverages, maximums, minimums };
 }
 
+function filterTop1(data, columns, country) {
+	const top1Data = {};
+	const top1Monthly = {};
+	for (let i = 0; i < data.length; i++) {
+		if (data[i]["Region"] == country && data[i]["Position"] == 1) {
+			const date = new Date(data[i]["Date"]);
+			top1Data[data[i]["Track.Name"]] = columns.map(v => data[i][v]);
+			top1Monthly[date.getMonth()] = [];
+			[data[i]["Track.Name"]]
+		}
+	}
+	return top1Data;
+}
+
 function createScale(radius, maximumValue) {
 	return d3.scaleLinear()
 		.range([0, radius])
@@ -103,13 +117,22 @@ function drawTicks(g, nAxis, radius, scaleTicks) {
 		.attr("class", "tick");
 }
 
+function getToolTipText(music) {
+	return `${music}`;
+}
+
 function drawData(g, data, rScale, color, radius) {
-	console.log(data);
 	const dataGroup = g.append("g").attr("class", "data-group");
 	const radialLine = d3.lineRadial()
 		.radius(d => rScale(d))
 		.angle((_, i) => i * ((2*Math.PI) / Object.values(data)[0].length) + Math.PI/2)
 		.curve(d3.curveLinearClosed);
+
+	var tip = d3.tip()
+		.attr('class', 'd3-tip')
+		.offset([-10, 0])
+		.html((d, i) => Object.keys(data)[i]);
+	dataGroup.call(tip);
 
 	dataGroup.selectAll("path")
 		.data(Object.values(data))
@@ -117,8 +140,18 @@ function drawData(g, data, rScale, color, radius) {
 		.append("path")
 		.attr("d", d => radialLine(d))
 		.attr("transform", `translate(${radius}, ${radius})`)
-		// .style("stroke", "green")
-		// .style("stroke-width", "1px")
 		.style("fill", (_, i) => color(Object.keys(data)[i]))
-		.style("opacity", "0.3");
+		.style("opacity", "0.7")
+		.on('mouseover', function (d, i) {
+			d3.selectAll(".data-group path")
+				.style("opacity", 0.1);
+			d3.select(this)
+				.style("opacity", 0.8);
+			tip.show(d, i);
+		})
+		.on('mouseout', function(d) {
+			d3.selectAll(".data-group path")
+				.style("opacity", 0.7);
+			tip.hide(d);
+		});
 }

@@ -47,9 +47,10 @@ function addSvgToHtml(selectorString, width, height) {
 
 	d3.csv('./data/Data treatment/completeDataset.csv').then(data => {
 		// Radar chart setup
+		const top1Data = filterTop1(data, radarChartAxes, "us");
 		const radarChartData = calculateBasicStatistics(data, radarChartAxes);
 		const radarChartColor = createColorScale(radarChartData.regionAverages);
-		drawData(radarChartGroup, radarChartData.monthAverages, radarChartScale,
+		drawData(radarChartGroup, top1Data, radarChartScale,
 			radarChartColor, radarChartConfiguration.radius);
 	});
 
