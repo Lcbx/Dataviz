@@ -66,21 +66,22 @@ function addAxes(g, xAxis, yAxisLeft, yAxisRight, height, bottomMargin) {
  * Create bump chart paths
  *
  * @param g     	Svg group where the bump chart should be created
- * @param data  	data used to create chart
+ * @param data  	complete dataset used to create chart
  * @param x     	horizontal axis scale
  * @param y     	vertical axis scale
  * @param height	chart height
  */
 function createBumpChart(g, data, x, y, height) {
+
 	var bump = g.append("g")
-			.attr("class", "bump")
+			.attr("id", "bump")
 			.attr("transform", "translate(10,0)")
 			.selectAll("g")
 			.data(data)
 			.enter()
 			.append("g");
 
-	// creates song paths displayed on the "default" view
+	// create song paths displayed on the "default" view
 	bump.append("path")
 	.attr("class", "defaultSongPath")
 	.attr("fill", "none")
@@ -88,7 +89,7 @@ function createBumpChart(g, data, x, y, height) {
 	.attr("stroke-width", "1")
 	.attr("d", createPath);
 
-	// creates wider song paths over default paths for a better mouse hover event management
+	// create wider song paths over default paths for a better mouse hover event management
 	bump.append("path")
 		.attr("class", "frontSongPath")
 		.attr("stroke", createColor)
@@ -96,11 +97,15 @@ function createBumpChart(g, data, x, y, height) {
 		.attr("d", createPath)
 		.attr("stroke-width", "20")
 		.attr("stroke-opacity", "0")
-		.on("mouseover", function(d){selectPath(this); hideDefaultPaths();})							
-		.on("mouseout", function(d){unselectPath(this); showDefaultPaths();});
+		.attr("trackName", function(d) {return d["Track.Name"];})
+		.attr("artist", function(d) {return d["Artist"];})
+		.attr("trackId", function(d) {return d["songId"];})
+		.on("mouseover", function(){selectPath(this); hideDefaultPaths();})							
+		.on("mouseout", function(){unselectPath(this); showDefaultPaths();});
 
-		
+	// make selected path appear on front	
 	function selectPath(path) {
+		console.log(path.getAttribute("trackName"));
 		d3.select(path)
 			.attr("stroke-width", "8")
 			.attr("stroke-opacity", "1");
@@ -123,18 +128,15 @@ function createBumpChart(g, data, x, y, height) {
 			.attr("stroke-opacity", "1");
 	}
 
-	// TODO: use fixed colors instead of random ?
+	// generate random color based on song id
 	function createColor(d, i) {
 		var randomNum = (d.songId.charCodeAt(0)+
-							d.songId.charCodeAt(2)+
-							d.songId.charCodeAt(4)+
-							d.songId.charCodeAt(6)+
-							d.songId.charCodeAt(8))%100;
-		//console.log(randomNum/100);
-		
+							d.songId.charCodeAt(5)+
+							d.songId.charCodeAt(10))%100;
 		return d3.interpolateRainbow(randomNum/100);
 	}
 
+	//create a song path
 	function createPath(d) {
 		var heightFactor = (y.range()[1] - y.range()[0])/10;
 		var path = [];
@@ -166,5 +168,43 @@ function createBumpChart(g, data, x, y, height) {
 		});
 		path = path.join("");
 		return path;
+	}
+}
+
+/**
+ * Set search bar parameters
+ * 
+ * @param data  	complete dataset used to create chart
+ */
+function setSearchBarParameters(data) {
+	var autoCompleteSources = d3.nest()
+	.key(function (d) {
+	  return d.Region;
+	})
+	.entries(data)
+	.map(function (d) {
+	  return {
+		id: +d.values[0].Region,
+		name: d.values[0].Region
+	  };
+	})
+	.sort(function (a, b) {
+	  return d3.ascending(a.name, b.name);
+	});
+	var searchBarElement = searchBar(autoCompleteSources, "bump-search-bar");
+	return searchBarElement;
+}
+
+/**
+ * Set update chart handler when another country is selected
+ * 
+ * @param countryName  	name of the country to display
+ * @param data  		complete dataset used to create chart
+ */
+function setSearchHandler(bumpChartGroup, searchBarElement, data, xScale, yScale, height) {
+	searchBarElement.search = function(id, countryName){
+		var countryData = data.filter(d => d.Region == countryName);
+		d3.select("#bump").remove();
+		createBumpChart(bumpChartGroup, countryData, xScale, yScale, height);
 	}
 }

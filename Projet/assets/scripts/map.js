@@ -59,7 +59,7 @@
           return d3.ascending(a.name, b.name);
         });
 
-      var searchBarElement = searchBar(autoCompleteSources);
+      var searchBarElement = searchBar(autoCompleteSources, "map-search-bar");
       searchBarElement.search = function (id) {
         var feature = world.features.find(function (d) {  
           return Number(d.properties["id"]) === id;
@@ -84,6 +84,7 @@
         var countryData = data.find(function (e) {
           return countryName === e.name;
         });
+        
 
         panel.style("display", "block");
         updatePanelInfo(panel, countryData, localization.getFormattedNumber);
