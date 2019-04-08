@@ -107,45 +107,97 @@ function addSvgToHtml(selectorString, width, height) {
 	 * Bar chart initialisation 
 	 */
 	 
+	 const features = [ "danceability", "energy", "speechiness", "acousticness", "instrumentalness", "liveness", "valence" ];
 	 
+	margin = { top: 40, right: 20, bottom: 20, left: 230 };
+	width = 450 - margin.left - margin.right;
+	height = 330 - margin.top - margin.bottom;
 	 
 	var x = d3.scaleLinear().range([0, width]);
-	var y = d3.scaleBand().range([height, 0]);
-	
-	var barChartGroup = d3.select("#barchart")
-        .append("svg")
-		.attr("id", "barchartSvg")
-		.attr("width", width + margin.left + margin.right)
-		.attr("height", height + margin.top + margin.bottom)
-        .append("g")
-		.attr("id", "barchartGroup")
-		.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+	var y = d3.scaleBand().range([0, height]);
 	  
 	d3.csv("./data/artists.csv").then(function(data) {
-	  
-		console.log(data);
-		data.sort( (a,b) => (b.danceability/b.nTracks - a.danceability/a.nTracks) );
-		 
-		var danceabilityList = data.slice(0,10);
-		console.log(danceabilityList);
+	  	
+		//console.log(data);
 		
-		x.domain([0, d3.max(danceabilityList, d => d.danceability/d.nTracks)]);
-		y.domain(data.map(d => d.Artist));
-
-		barChartGroup.append("g")
-			.attr("class", "y axis")
-			.attr("background-color","#F1F3F3") 
-			.call(d3.axisLeft(y));
-
-		barChartGroup.selectAll(".bar")
-			.data(data)
-		  .enter().append("rect")
-			.attr("class", "bar")
-			.attr("fill", "steelblue")
-			.attr("x", 0)
-			.attr("height", y.bandwidth())
-			.attr("y", d => y(d.Artist))
-			.attr("width", d => x(d.danceability/d.nTracks));
+		data.forEach( function(d){
+			d.nTracks = +d.nTracks;
+			d.danceability = +d.danceability;
+			d.energy = +d.energy;
+			d.speechiness = +d.speechiness;
+			d.acousticness = +d.acousticness;
+			d.instrumentalness = +d.instrumentalness;
+			d.liveness = +d.liveness;
+			d.valence = +d.valence;
+			})
+		
+		features.forEach( function(feature){
+			//console.log(feature);
+			
+			var barChartGroup = d3.select("#" + feature + "chart")
+				.append("svg")
+				.attr("width", width + margin.left + margin.right)
+				.attr("height", height + margin.top + margin.bottom)
+				.append("g")
+				.attr("id", "barchartGroup")
+				.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+			
+			
+			data.sort( (a,b) => ( b[feature]) - a[feature] );
+			 
+			var featureList = data.slice(0,10);
+			//console.log(featureList);
+			
+			x.domain([	0.95 * 	d3.min(featureList, d => d[feature]),
+											d3.max(featureList, d => d[feature])  ]);
+			y.domain(featureList.map(d => d.name)).padding(0.3);
+			
+			 barChartGroup.append("g")
+				.attr("class", "x axis");
+				//.call(d3.axisTop(x));
+			
+			barChartGroup.append("g")
+				.style("font", "13px times")
+				.attr("class", "y axis")
+				.call(d3.axisLeft(y));
+			
+			var tooltip = d3.select("body").append("div").attr("class", "tooltip");
+			
+			barChartGroup.selectAll(".bar")
+				.data(featureList)
+			  .enter().append("rect")
+				.attr("class", "bar")
+				.attr("fill", "steelblue")
+				.attr("x", 2)
+				.attr("height", y.bandwidth())
+				.attr("y", d => y(d.name))
+				.attr("width", d => x(d[feature]))
+				.on("mousemove", function(d){
+				tooltip
+				  .style("left", d3.event.pageX - 5 + "px")
+				  .style("top", d3.event.pageY - 7 + "px")
+				  .style("display", "inline-block")
+				  .html(
+				  (d.name) + "<br>" +
+				  "danceability : " + (d.danceability.toPrecision(3)) + "<br>" +
+				  "energy : " + (d.energy.toPrecision(3)) + "<br>" +
+				  "speechiness : " + (d.speechiness.toPrecision(3)) + "<br>" +
+				  "acousticness : " + (d.acousticness.toPrecision(3)) + "<br>" +
+				  "instrumentalness : " + (d.instrumentalness.toPrecision(3)) + "<br>" +
+				  "liveness : " + (d.liveness.toPrecision(3)) + "<br>" +
+				  "valence : " + (d.valence.toPrecision(3))
+				  ); })
+				  .on("mouseout", function(d){ tooltip.style("display", "none");});
+				  
+			barChartGroup.append("text")
+					.attr("x", (width / 2))             
+					.attr("y", 0 - (margin.top / 3))
+					.attr("text-anchor", "middle")  
+					.style("font-size", "20px") 
+					.style("text-decoration", "underline")
+					.text(feature);
+				  
+			});
 	});
 	 
 

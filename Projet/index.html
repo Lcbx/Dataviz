@@ -64,18 +64,17 @@ As you can see below, it is popular in multiple countries in both Europe, Americ
   
   <h2>What's in a song ?</h2>
   <table><tr>
-    <td style="padding-top:4%; padding-left:1%; min-width:500px;"><ul type="square">
+    <td style="padding-top:4%; padding-left:1%; padding-right: 20px; min-width:500px;"><ul type="square">
 <li><i>Danceability</i> describes how suitable a track is for dancing. </li>
 <li><i>Energy</i> represents a perceptual measure of intensity and activity. </li>
 <li><i>Instrumentalness</i> is a rating of whether the track has vocals. </li>
 <li><i>Acousticness</i>  is a rating of whether the track is vocal. </li>
 <li><i>Liveness</i> is a rating of whether the track is performed live. </li>
 <li><i>Valence</i> describes the musical positiveness conveyed by a track. </li>
-<li><i>Loudness</i> is the overall loudness of a track in decibels (dB). </li>
 <li><i>Speechiness</i> is a rating of how much of the track has vocals.  </li>
 <li><i>Tempo</i> is the estimated tempo of a track. [2] </li>
     </ul></td>
-    <td id="radar-chart"></td>
+    <td id="radar-chart" style="width: 45%;"></td>
   </tr></table>
   
   
@@ -85,8 +84,16 @@ As you can see below, it is popular in multiple countries in both Europe, Americ
 
   
   <h2>How are artists and genres associated with different features ?</h2>
-  <div>We have seen the different features countries appreciate ; what does it mean in terms of  most streamed artists ? </br> Here are some rankings of artists by features (average of their songs) that can answer those questions :</div>
-  <div id="barchart"></div>
+  <div>We have seen the different features countries appreciate ; what does it mean in terms of  most streamed artists ? </br> Here are some rankings of artists by features (average of their songs that made it to the top 10) that might answer those questions :</div>
+  <table><tr>
+  <td><div id="danceabilitychart" class="barchart"></div></td>
+  <td><div id="energychart" class="barchart"></div></td>
+  <td><div id="speechinesschart" class="barchart"></div></td>
+  <td><div id="acousticnesschart" class="barchart"></div></td>
+  <td><div id="instrumentalnesschart" class="barchart"></div></td>
+  <td><div id="livenesschart" class="barchart"></div></td>
+  <td><div id="valencechart" class="barchart"></div></td>
+  </tr></table>
   
   
   
