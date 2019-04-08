@@ -71,29 +71,17 @@ function getToolTipText(music) {
 		<span style="font-style:italic" style="font-weight:bold">${music["Artist"]}</span>`;
 }
 
+function updateData(g, data, rScale, color, radius, columns) {
+	d3.select("#radar-chart g.data-group").remove();
+	drawData(g, data, rScale, color, radius, columns);
+}
+
 function drawData(g, data, rScale, color, radius, columns) {
 	const dataGroup = g.append("g").attr("class", "data-group");
 	const radialLine = d3.lineRadial()
 		.radius(d => rScale(d))
 		.angle((_, i) => i * ((2*Math.PI) / columns.length) + Math.PI/2)
 		.curve(d3.curveLinearClosed);
-
-	const circleTip = d3.tip()
-		.attr("class", "d3-tip")
-		.offset([-10, 0])
-		.html(d => d);
-	dataGroup.call(circleTip);
-
-	dataGroup.selectAll("circle")
-		.data(getRadarChartData(data, columns).flat())
-		.enter()
-		.append("circle")
-		.attr("cx", (d, i) => radius + rScale(d) * Math.cos((i % columns.length) * ((2*Math.PI) / columns.length) ))
-		.attr("cy", (d, i) => radius + rScale(d) * Math.sin((i % columns.length) * ((2*Math.PI) / columns.length)))
-		.attr("r", 3)
-		.style("fill", (_, i) => color(data[Math.floor(i/columns.length)]["Id"]))
-		.on("mouseover", circleTip.show)
-		.on("mouseout", circleTip.hide);
 
 	const areaTip = d3.tip()
 		.attr("class", "d3-tip")
