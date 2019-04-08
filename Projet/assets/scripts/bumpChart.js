@@ -14,10 +14,10 @@
  * @param height    		chart height
  * @param bottomMargin 	chart bottom margin
  */
-function addAxes(g, xAxis, yAxisLeft, yAxisRight, width, height, margin) {
+function addAxes(data, g, xAxis, yAxisLeft, yAxisRight, width, height, margin) {
 
 	g.append("g")
-		.attr("class", "axis")
+		.attr("class", "Xaxis")
 		.attr("transform", "translate(" + margin.left + "," + (height + margin.top) + ")")
 		.call(xAxis)
         .selectAll("text")
@@ -26,38 +26,34 @@ function addAxes(g, xAxis, yAxisLeft, yAxisRight, width, height, margin) {
         .attr("dy", 12)
         .attr("transform", "rotate(45)")
 		.style("text-anchor", "start")
-		.style("font-size", "13px");
-				
+		.style("font-size", "15px");
+	d3.selectAll(".Xaxis .tick text").on("mouseover", function(){this.style.cursor="pointer"});
+	d3.selectAll(".Xaxis .tick text")
+		.on("click", function(d){
+			if(this.selected != true){
+				this.selected=true;
+				this.style.fontWeight="bolder";
+				var country = document.getElementById("bump").selectedCountry;
+				console.log(country);
+				var newData = getSelectedData(data, country, d);
+			} else {
+				this.selected = false;
+				this.style.fontWeight="normal";
+			}});
+	
+
 	// TODO: change hard coded translate distance for parameters 
 	g.append("g")
-        .attr("class", "axis")
+        .attr("class", "YLaxis")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
 		.call(yAxisLeft)
 		.style("font-size", "16px");
 
 	g.append("g")
-		.attr("class", "axis")
+		.attr("class", "YRaxis")
 		.attr("transform", "translate(" + (width + margin.left) + "," + margin.top + ")")
 		.call(yAxisRight)
 		.style("font-size", "16px");
-
-/*  // add axis labels ?
-	g.append("text")
-		.attr("class", "axis-label")
-		.attr("text-anchor", "end")
-		.attr("x", 0)
-		.attr("y", 20)
-		.attr("transform", function(d) {
-			return "rotate(-90)"})
-		.text("put axis name here");
-
-	g.append("text")
-		.attr("class", "axis-label")
-		.attr("text-anchor", "end")
-		.attr("x", width)
-		.attr("y", height - 8)
-		.text("put axis name here");
-*/
 }
 
 /**
@@ -69,13 +65,15 @@ function addAxes(g, xAxis, yAxisLeft, yAxisRight, width, height, margin) {
  * @param y     	vertical axis scale
  * @param height	chart height
  */
-function createBumpChart(g, data, x, y, margin) {
+function createBumpChart(g, data, country, x, y, margin) {
+
+	var filteredData = getSelectedData(data, country, null);
 
 	var bump = g.append("g")
 			.attr("id", "bump")
 			.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
 			.selectAll("g")
-			.data(data)
+			.data(filteredData)
 			.enter()
 			.append("g");
 
@@ -205,6 +203,9 @@ function createBumpChart(g, data, x, y, margin) {
 		return path;
 	}
 }
+function deleteChart(){
+	d3.select("#bump").remove();
+}
 
 /**
  * Set search bar parameters
@@ -230,6 +231,10 @@ function setSearchBarParameters(data) {
 	return searchBarElement;
 }
 
+function getSelectedData(data, country, month) {
+	return data.filter(d => d.Region == country);
+}
+
 /**
  * Set update chart handler when another country is selected
  * 
@@ -238,8 +243,8 @@ function setSearchBarParameters(data) {
  */
 function setSearchHandler(bumpChartGroup, searchBarElement, data, xScale, yScale, margin) {
 	searchBarElement.search = function(id, countryName){
-		var countryData = data.filter(d => d.Region == countryName);
-		d3.select("#bump").remove();
-		createBumpChart(bumpChartGroup, countryData, xScale, yScale, margin);
+		document.getElementById("bump").selectedCountry = countryName; //add new properties to chart group
+		deleteChart();
+		createBumpChart(bumpChartGroup, data, countryName, xScale, yScale, margin);
 	}
 }

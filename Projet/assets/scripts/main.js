@@ -57,7 +57,7 @@ function addSvgToHtml(selectorString, width, height) {
 	/******************/
 
 	// layout parameters
-	var bumpChartMargin = { top: 20, right: 50, bottom: 70, left: 40 },
+	var bumpChartMargin = { top: 20, right: 55, bottom: 70, left: 40 },
 		bumpWidth = 900 - bumpChartMargin.left - bumpChartMargin.right,
 		bumpHeight = 500 - bumpChartMargin.top - bumpChartMargin.bottom;
 
@@ -93,9 +93,8 @@ function addSvgToHtml(selectorString, width, height) {
 
 	// load data, create chart elements and set country search bar
 	d3.csv("./data/bumpChartData.csv").then(function (data) {
-		var dataGlobal = data.filter(d => d.Region == "Global");
-		addAxes(bumpChartGroup, xAxis, yAxisLeft, yAxisRight, bumpWidth, bumpHeight, bumpChartMargin);
-		createBumpChart(bumpChartGroup, dataGlobal, xScale, yScale, bumpChartMargin);
+        addAxes(data, bumpChartGroup, xAxis, yAxisLeft, yAxisRight, bumpWidth, bumpHeight, bumpChartMargin);
+		createBumpChart(bumpChartGroup, data, "Global", xScale, yScale, bumpChartMargin);
 		var searchBarElement = setSearchBarParameters(data);
 		setSearchHandler(bumpChartGroup, searchBarElement, data, xScale, yScale, bumpChartMargin);
 	});
