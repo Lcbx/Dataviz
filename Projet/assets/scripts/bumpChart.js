@@ -14,13 +14,11 @@
  * @param height    		chart height
  * @param bottomMargin 	chart bottom margin
  */
-function addAxes(g, xAxis, yAxisLeft, yAxisRight, height, bottomMargin) {
-
-	var padding = 0;
+function addAxes(g, xAxis, yAxisLeft, yAxisRight, width, height, margin) {
 
 	g.append("g")
 		.attr("class", "axis")
-		.attr("transform", "translate(10," + (height - bottomMargin) + ")")
+		.attr("transform", "translate(" + margin.left + "," + (height + margin.top) + ")")
 		.call(xAxis)
         .selectAll("text")
         .attr("y", 0)
@@ -28,20 +26,20 @@ function addAxes(g, xAxis, yAxisLeft, yAxisRight, height, bottomMargin) {
         .attr("dy", 12)
         .attr("transform", "rotate(45)")
 		.style("text-anchor", "start")
-		.style("font-size", "12px");
+		.style("font-size", "13px");
 				
 	// TODO: change hard coded translate distance for parameters 
 	g.append("g")
         .attr("class", "axis")
-        .attr("transform", "translate(10,0)")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
 		.call(yAxisLeft)
-		.style("font-size", "14px");
+		.style("font-size", "16px");
 
 	g.append("g")
 		.attr("class", "axis")
-		.attr("transform", "translate(830,0)")
+		.attr("transform", "translate(" + (width + margin.left) + "," + margin.top + ")")
 		.call(yAxisRight)
-		.style("font-size", "14px");
+		.style("font-size", "16px");
 
 /*  // add axis labels ?
 	g.append("text")
@@ -71,11 +69,11 @@ function addAxes(g, xAxis, yAxisLeft, yAxisRight, height, bottomMargin) {
  * @param y     	vertical axis scale
  * @param height	chart height
  */
-function createBumpChart(g, data, x, y, height) {
+function createBumpChart(g, data, x, y, margin) {
 
 	var bump = g.append("g")
 			.attr("id", "bump")
-			.attr("transform", "translate(10,0)")
+			.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
 			.selectAll("g")
 			.data(data)
 			.enter()
@@ -109,8 +107,11 @@ function createBumpChart(g, data, x, y, height) {
 
 	// tooltip initialization
 	var	tip = d3.tip()
-				.attr('class', 'bump-tip')
-				.html(function(d) {return d["Track.Name"]; })
+				.attr("id", "bump-tip")
+				.html(function(d) {return "<span style='font-weight:bold'>" 
+														+ d["Track.Name"] + "</span>"
+														+ "<br> <span style='font-style:italic' style='font-weight:bold'>" 
+														+ d["Artist"] + "</span>"; })
 				.offset(function(d) {
 					let pos = getPosition(d)-5.5;
 					return [-10, pos*74];
@@ -172,7 +173,6 @@ function createBumpChart(g, data, x, y, height) {
 
 	//create a song path
 	function createPath(d) {
-		var heightFactor = (y.range()[1] - y.range()[0])/10;
 		var path = [];
 		var initialRank = 0;
 		if (d[x.domain()[0]] == "") {
@@ -236,10 +236,10 @@ function setSearchBarParameters(data) {
  * @param countryName  	name of the country to display
  * @param data  		complete dataset used to create chart
  */
-function setSearchHandler(bumpChartGroup, searchBarElement, data, xScale, yScale, height) {
+function setSearchHandler(bumpChartGroup, searchBarElement, data, xScale, yScale, margin) {
 	searchBarElement.search = function(id, countryName){
 		var countryData = data.filter(d => d.Region == countryName);
 		d3.select("#bump").remove();
-		createBumpChart(bumpChartGroup, countryData, xScale, yScale, height);
+		createBumpChart(bumpChartGroup, countryData, xScale, yScale, margin);
 	}
 }

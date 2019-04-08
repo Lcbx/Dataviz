@@ -54,27 +54,29 @@ function addSvgToHtml(selectorString, width, height) {
 			radarChartColor, radarChartConfiguration.radius);
 	});
 
-    /**************************/
-    /*** bump chart creation ***/
-    /**************************/
+    /******************/
+    /*** bump chart ***/
+    /******************/
 
-    /*** layout parameters ***/
-	var margin = { top: 20, right: 20, bottom: 30, left: 20 },
-		width = 900 - margin.left - margin.right,
-		height = 500 - margin.top - margin.bottom;
+    // layout parameters
+	var bumpChartMargin = { top: 20, right: 50, bottom: 70, left: 40 },
+		bumpWidth = 900 - bumpChartMargin.left - bumpChartMargin.right,
+		bumpHeight = 500 - bumpChartMargin.top - bumpChartMargin.bottom;
 
-	/*** bump chart scales ***/
+	// bump chart scales
 	var xDomain = ["2017-01-01", "2017-02-01", "2017-03-01", "2017-04-01",
 					"2017-05-01", "2017-06-01", "2017-07-01", "2017-08-01",
 					"2017-09-01", "2017-10-01", "2017-11-01", "2017-12-01"];
+
+	// scales creation
 	var xScale = d3.scalePoint()
 		.domain(xDomain)
-		.range([0, width - margin.right - margin.left]),
+		.range([0, bumpWidth]),
 	    yScale = d3.scaleLinear()
 		.domain([1, 11])
-        .range([0, height - margin.bottom]);
+        .range([0, bumpHeight]);
         
-    /*** bump chart axes ***/
+    // bump chart axes
 	var xTickLabels = ["January", "February", "March", "April", "May", "June", "July", 
 						"August", "September", "October", "November", "December"];
 	var xAxis = d3.axisBottom(xScale).tickFormat(function (d, i) { return xTickLabels[i] });
@@ -82,27 +84,22 @@ function addSvgToHtml(selectorString, width, height) {
 	var yAxisLeft = d3.axisLeft(yScale).tickFormat(function (d, i) { return yTickLabels[i] });
 	var yAxisRight = d3.axisRight(yScale).tickFormat(function (d, i) { return yTickLabels[i] });
 
-	/*** bump chart SVG ***/
-    // use addSvgToHtml? --> will optimize code at the end
+	// bump chart SVG
     var bumpChartGroup = d3.select("#bumpChartDiv")
         .append("svg")
 		.attr("id", "bumpChartSvg")
-		.attr("width", width + margin.left + margin.right)
-		.attr("height", height + margin.top + margin.bottom)
+		.attr("width", bumpWidth + bumpChartMargin.left + bumpChartMargin.right)
+		.attr("height", bumpHeight + bumpChartMargin.top + bumpChartMargin.bottom)
         .append("g")
-		.attr("id", "bumpChartGroup")
-		.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+		.attr("id", "bumpChartGroup");
 
-	//console.log(bumpChartGroup);
-
-	var completeBumpDataset = d3.csv("./data/bumpChartData.csv");
-
+	// load data, create chart elements and set country search bar
     d3.csv("./data/bumpChartData.csv").then(function (data) {
 		var dataGlobal = data.filter(d => d.Region == "Global");
-        addAxes(bumpChartGroup, xAxis, yAxisLeft, yAxisRight, height, margin.bottom);
-		createBumpChart(bumpChartGroup, dataGlobal, xScale, yScale, height);
+        addAxes(bumpChartGroup, xAxis, yAxisLeft, yAxisRight, bumpWidth, bumpHeight, bumpChartMargin);
+		createBumpChart(bumpChartGroup, dataGlobal, xScale, yScale, bumpChartMargin);
 		var searchBarElement = setSearchBarParameters(data);
-		setSearchHandler(bumpChartGroup, searchBarElement, data, xScale, yScale, height);
+		setSearchHandler(bumpChartGroup, searchBarElement, data, xScale, yScale, bumpChartMargin);
 	});
 	
 	
@@ -203,5 +200,6 @@ function addSvgToHtml(selectorString, width, height) {
 			});
 	});
 	 
+
 
 })(d3, localization);
