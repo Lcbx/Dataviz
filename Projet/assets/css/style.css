@@ -43,8 +43,6 @@ table {
 
 td {
 	float:left;
-	width: 45%;
-	padding-right: 30px;
 }
 
 div {
@@ -226,5 +224,3 @@ div.tooltip {
   background-color: white;
   pointer-events: none; /* keep the mouseover when over the tooltip */
 }
-
-
