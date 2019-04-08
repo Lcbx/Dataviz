@@ -229,4 +229,5 @@ div.tooltip {
   position: sticky;
   position: -webkit-sticky;
   top: 0;
+  padding-top: 30px;
 }
