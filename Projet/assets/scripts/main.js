@@ -136,10 +136,7 @@ function addSvgToHtml(selectorString, width, height) {
 			data.sort((a, b) => (b[feature]) - a[feature]);
 			var featureList = data.slice(0, 10);
 
-			x.domain([
-				0.95 * d3.min(featureList, d => d[feature]),
-				d3.max(featureList, d => d[feature])
-			]);
+			x.domain([0.,1.]);
 			y.domain(featureList.map(d => d.name)).padding(0.3);
 
 			barChartGroup.append("g")
