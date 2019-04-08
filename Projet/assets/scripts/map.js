@@ -157,9 +157,9 @@ function createCountries(g, path, world, sources, color, showPanel) {
         .attr('fill-opacity', d => d.properties.spotify === "1" ? 0.7 : 1.0)
         .attr('stroke', '#333333')
         .on('click', d => {
-          var selectedCountry = d.properties.NAME;
+          var selectedCountry = d.properties.id;
           g.selectAll(".country")
-            .classed("selected", d => (d.properties.NAME == selectedCountry));
+            .classed("selected", d => (d.properties.id == selectedCountry));
           showPanel(selectedCountry);
         });
 
@@ -172,7 +172,7 @@ function createCountries(g, path, world, sources, color, showPanel) {
 
       svg.append("g")
         .attr("class", "legendLinear")
-        .attr("transform", "translate(20, 475)");
+        .attr("transform", "translate(20, 440)");
 
       var legendLinear = d3.legendColor()
         .title("Popularity")
@@ -212,7 +212,6 @@ function createCountries(g, path, world, sources, color, showPanel) {
 
   function updateMap(svg, g, path, countriesData) {
     var countries = path.bounds(countriesData);
-    console.log(countriesData);
     var topLeft = countries[0], bottomRight = countries[1];
 
     svg.attr("width", bottomRight[0] - topLeft[0])
