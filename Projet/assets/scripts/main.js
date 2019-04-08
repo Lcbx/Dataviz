@@ -45,13 +45,11 @@ function addSvgToHtml(selectorString, width, height) {
 	drawAxisNames(radarChartGroup, radarChartAxes, radarChartConfiguration.radius);
 	drawTicks(radarChartGroup, radarChartAxes.length, radarChartConfiguration.radius, radarChartConfiguration.scaleTicks);
 
-	d3.csv('./data/Data treatment/completeDataset.csv').then(data => {
+	d3.json("./data/top1PerCountry.json").then(data => {
 		// Radar chart setup
-		const top1Data = filterTop1(data, radarChartAxes, "us");
-		const radarChartData = calculateBasicStatistics(data, radarChartAxes);
-		const radarChartColor = createColorScale(radarChartData.regionAverages);
-		drawData(radarChartGroup, top1Data, radarChartScale,
-			radarChartColor, radarChartConfiguration.radius);
+		const radarChartColor = createColorScale(data["global"]);
+		drawData(radarChartGroup, data["global"], radarChartScale,
+			radarChartColor, radarChartConfiguration.radius, radarChartAxes);
 	});
 
     /******************/

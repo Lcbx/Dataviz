@@ -1,56 +1,9 @@
-function calculateBasicStatistics(data, columns, groupBy="Region") {
-	const regionAverages = {};
-	const regionCounts = {};
-	const monthAverages = {};
-	const monthCounts = {}; 
-	let maximums = columns.map(() => 0.0);
-	let minimums = columns.map(() => Number.MAX_VALUE);
+function getRadarChartData(data, columns) {
+	const radarChartData = [];
 	for (let i = 0; i < data.length; i++) {
-		if (regionAverages.hasOwnProperty(data[i]["Region"]) == false) {
-			regionAverages[data[i]["Region"]] = columns.map(() => 0.0);
-			regionCounts[data[i]["Region"]] = 0;
-		}
-		let date = new Date(data[i]["Date"]);
-		if (monthAverages.hasOwnProperty(date.getMonth()) == false) {
-			monthAverages[date.getMonth()] = columns.map(() => 0.0);
-			monthCounts[date.getMonth()] = 0;
-		}
-		for (let j = 0; j < columns.length; j++) {
-			let currentValue = parseFloat(data[i][columns[j]])
-			regionAverages[data[i]["Region"]][j] += currentValue;
-			monthAverages[date.getMonth()][j] += currentValue;
-
-			if (currentValue > maximums[j]) {
-				maximums[j] = currentValue;
-			}
-			if (currentValue < minimums[j]) {
-				minimums[j] = currentValue;
-			}
-		}
-		regionCounts[data[i]["Region"]] += 1;
-		monthCounts[date.getMonth()] += 1;
+		radarChartData[i] = columns.map(val => data[i][val]);
 	}
-	for (const region in regionAverages) {
-		regionAverages[region] = regionAverages[region].map(x => x / regionCounts[region]);
-	}
-	for (const month in monthAverages) {
-		monthAverages[month] = monthAverages[month].map(x => x / monthCounts[month]);
-	}
-	return { monthAverages, regionAverages, maximums, minimums };
-}
-
-function filterTop1(data, columns, country) {
-	const top1Data = {};
-	const top1Monthly = {};
-	for (let i = 0; i < data.length; i++) {
-		if (data[i]["Region"] == country && data[i]["Position"] == 1) {
-			const date = new Date(data[i]["Date"]);
-			top1Data[data[i]["Track.Name"]] = columns.map(v => data[i][v]);
-			top1Monthly[date.getMonth()] = [];
-			[data[i]["Track.Name"]]
-		}
-	}
-	return top1Data;
+	return radarChartData;
 }
 
 function createScale(radius, maximumValue) {
@@ -60,8 +13,8 @@ function createScale(radius, maximumValue) {
 }
 
 function createColorScale(data) {
-	return d3.scaleOrdinal(d3.schemeSet3)
-		.domain(Object.keys(data));
+	return d3.scaleOrdinal(d3.schemeCategory10)
+		.domain(data.map(val => val["Id"]));
 }
 
 function drawAxes(g, axisNames, radius) {
@@ -114,40 +67,58 @@ function drawTicks(g, nAxis, radius, scaleTicks) {
 }
 
 function getToolTipText(music) {
-	return `${music}`;
+	return `<span style="font-weight:bold">${music["Track.Name"]}</span><br>
+		<span style="font-style:italic" style="font-weight:bold">${music["Artist"]}</span>`;
 }
 
-function drawData(g, data, rScale, color, radius) {
+function drawData(g, data, rScale, color, radius, columns) {
 	const dataGroup = g.append("g").attr("class", "data-group");
 	const radialLine = d3.lineRadial()
 		.radius(d => rScale(d))
-		.angle((_, i) => i * ((2*Math.PI) / Object.values(data)[0].length) + Math.PI/2)
+		.angle((_, i) => i * ((2*Math.PI) / columns.length) + Math.PI/2)
 		.curve(d3.curveLinearClosed);
 
-	var tip = d3.tip()
-		.attr('class', 'd3-tip')
+	const circleTip = d3.tip()
+		.attr("class", "d3-tip")
 		.offset([-10, 0])
-		.html((d, i) => Object.keys(data)[i]);
-	dataGroup.call(tip);
+		.html(d => d);
+	dataGroup.call(circleTip);
+
+	dataGroup.selectAll("circle")
+		.data(getRadarChartData(data, columns).flat())
+		.enter()
+		.append("circle")
+		.attr("cx", (d, i) => radius + rScale(d) * Math.cos((i % columns.length) * ((2*Math.PI) / columns.length) ))
+		.attr("cy", (d, i) => radius + rScale(d) * Math.sin((i % columns.length) * ((2*Math.PI) / columns.length)))
+		.attr("r", 3)
+		.style("fill", (_, i) => color(data[Math.floor(i/columns.length)]["Id"]))
+		.on("mouseover", circleTip.show)
+		.on("mouseout", circleTip.hide);
+
+	const areaTip = d3.tip()
+		.attr("class", "d3-tip")
+		.offset([-10, 0])
+		.html((d, i) => getToolTipText(data[i]));
+	dataGroup.call(areaTip);
 
 	dataGroup.selectAll("path")
-		.data(Object.values(data))
+		.data(getRadarChartData(data, columns))
 		.enter()
 		.append("path")
 		.attr("d", d => radialLine(d))
 		.attr("transform", `translate(${radius}, ${radius})`)
-		.style("fill", (_, i) => color(Object.keys(data)[i]))
+		.style("fill", (_, i) => color(data[i]["Id"]))
 		.style("opacity", "0.7")
-		.on('mouseover', function (d, i) {
+		.on("mouseover", function (d, i) {
 			d3.selectAll(".data-group path")
 				.style("opacity", 0.1);
 			d3.select(this)
-				.style("opacity", 0.8);
-			tip.show(d, i);
+				.style("opacity", 0.9);
+			areaTip.show(d, i);
 		})
-		.on('mouseout', function(d) {
+		.on("mouseout", function(d) {
 			d3.selectAll(".data-group path")
 				.style("opacity", 0.7);
-			tip.hide(d);
+			areaTip.hide(d);
 		});
 }
