@@ -17,7 +17,7 @@ function addSvgToHtml(selectorString, width, height) {
 }
 
 
-(function (d3, localization) {
+(function (d3, L, topojson, localization, searchBar) {
 	"use strict";
 	/***************/
 	/* Radar-Chart */
@@ -44,12 +44,103 @@ function addSvgToHtml(selectorString, width, height) {
 	drawAxes(radarChartGroup, radarChartAxes, radarChartConfiguration.radius);
 	drawAxisNames(radarChartGroup, radarChartAxes, radarChartConfiguration.radius);
 	drawTicks(radarChartGroup, radarChartAxes.length, radarChartConfiguration.radius, radarChartConfiguration.scaleTicks);
-
+	var radarChartData;
 	d3.json("./data/top1PerCountry.json").then(data => {
 		// Radar chart setup
-		const radarChartColor = createColorScale(data["global"]);
-		drawData(radarChartGroup, data["global"], radarChartScale,
+		radarChartData = data;
+		const radarChartColor = createColorScale(radarChartData["global"]);
+		drawData(radarChartGroup, radarChartData["global"], radarChartScale,
 			radarChartColor, radarChartConfiguration.radius, radarChartAxes);
+	});
+
+
+	/***********/
+	/*** Map ***/
+	/***********/
+
+	/***** Configuration *****/
+	var panel = d3.select("#panel");
+	var map = L.map('map', {
+		'worldCopyJump': true
+	});
+
+	/***** Échelles utilisées *****/
+	var color = d3.scaleLinear();
+
+	/***** Chargement des données *****/
+	var promises = [];
+	promises.push(d3.json("./data/world_data.json"));
+	promises.push(d3.csv("./data/world-country-names.csv"));
+	var updateMapData;
+	Promise.all(promises).then(function (results) {
+		var worldTopoJson = results[0];
+
+		var world = topojson.feature(worldTopoJson, worldTopoJson.objects.ne_50m_admin_0_countries);
+		var data = results[1];
+		colorScale(color, data);
+
+		/***** Initialisation de la carte *****/
+		initTileLayer(L, map);
+		var mapSvg = initSvgLayer(map);
+		var g = undefined;
+
+		if (mapSvg) {
+			g = mapSvg.select("g");
+		}
+		var path = createPath(map);
+
+		createCountries(g, path, world, data, color, showPanel, data);
+		map.on("viewreset", function () {
+			updateMap(mapSvg, g, path, world);
+		});
+		updateMap(mapSvg, g, path, world);
+
+		/***** Recherche d'une circonscription *****/
+		var autoCompleteSources = d3.nest()
+			.key(function (d) {
+				return d.id;
+			})
+			.entries(data)
+			.map(function (d) {
+				return {
+					id: +d.values[0].id,
+					name: d.values[0].name
+				};
+			})
+			.sort(function (a, b) {
+				return d3.ascending(a.name, b.name);
+			});
+
+		/***** Gestion du panneau d'informations *****/
+		panel.select("button")
+			.on("click", function () {
+				reset(g);
+				panel.style("display", "none");
+			});
+		function showPanel(countryName) {
+			var countryData = data.find(function (e) {
+				if(countryName == e.id){
+					return e.name;
+				}
+			});
+			panel.style("display", "block");
+			updatePanelInfo(panel, countryData, localization.getFormattedNumber);
+		}
+
+		updateMapData = function (countryName) {
+			var id;
+			var feature = world.features.find(function (d) {
+				if (d.properties["NAME_LONG"] === countryName) {
+					id = Number(d.properties["id"])
+					return true;
+				}
+			});
+			var bound = d3.geoBounds(feature);
+			search(map, g, id, [
+					[bound[0][1], bound[0][0]],
+					[bound[1][1], bound[1][0]]
+				], showPanel);
+		}
 	});
 
 	/******************/
@@ -93,10 +184,19 @@ function addSvgToHtml(selectorString, width, height) {
 
 	// load data, create chart elements and set country search bar
 	d3.csv("./data/bumpChartData.csv").then(function (data) {
-        addAxes(data, bumpChartGroup, xAxis, yAxisLeft, yAxisRight, bumpWidth, bumpHeight, bumpChartMargin);
+		addAxes(data, bumpChartGroup, xAxis, yAxisLeft, yAxisRight, bumpWidth, bumpHeight, bumpChartMargin);
 		createBumpChart(bumpChartGroup, data, "Global", xScale, yScale, bumpChartMargin);
 		var searchBarElement = setSearchBarParameters(data);
-		setSearchHandler(bumpChartGroup, searchBarElement, data, xScale, yScale, bumpChartMargin);
+		searchBarElement.search = (id, countryName) => {
+			// Update bump chart
+			bumpCharSearchHandler(countryName, bumpChartGroup, data, xScale, yScale, bumpChartMargin);
+			// Update radar chart
+			const radarChartColor = createColorScale(radarChartData[mapCountryNameCode[countryName]]);
+			updateRadarChartData(radarChartGroup, radarChartData[mapCountryNameCode[countryName]], radarChartScale,
+				radarChartColor, radarChartConfiguration.radius, radarChartAxes)
+			// Update map
+			updateMapData(countryName);
+		};
 	});
 
 
@@ -141,7 +241,6 @@ function addSvgToHtml(selectorString, width, height) {
 
 			barChartGroup.append("g")
 				.attr("class", "x axis");
-			//.call(d3.axisTop(x));
 
 			barChartGroup.append("g")
 				.style("font", "13px times")
@@ -186,4 +285,5 @@ function addSvgToHtml(selectorString, width, height) {
 				.text(feature);
 		});
 	});
-})(d3, localization);
+
+})(d3, L, topojson, localization, searchBar);
